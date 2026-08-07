@@ -1,0 +1,114 @@
+[
+  {
+    "home": "ANEESH",
+    "away": "ANINDYA"
+  },
+  {
+    "home": "ANEESH",
+    "away": "RAJARSHI"
+  },
+  {
+    "home": "ANEESH",
+    "away": "SOUMALYA"
+  },
+  {
+    "home": "ANEESH",
+    "away": "SAGE"
+  },
+  {
+    "home": "ANEESH",
+    "away": "DHRUBA"
+  },
+  {
+    "home": "ANEESH",
+    "away": "SAPTARSHI"
+  },
+  {
+    "home": "ANEESH",
+    "away": "JEET"
+  },
+  {
+    "home": "ANINDYA",
+    "away": "RAJARSHI"
+  },
+  {
+    "home": "ANINDYA",
+    "away": "SOUMALYA"
+  },
+  {
+    "home": "ANINDYA",
+    "away": "SAGE"
+  },
+  {
+    "home": "ANINDYA",
+    "away": "DHRUBA"
+  },
+  {
+    "home": "ANINDYA",
+    "away": "SAPTARSHI"
+  },
+  {
+    "home": "ANINDYA",
+    "away": "JEET"
+  },
+  {
+    "home": "RAJARSHI",
+    "away": "SOUMALYA"
+  },
+  {
+    "home": "RAJARSHI",
+    "away": "SAGE"
+  },
+  {
+    "home": "RAJARSHI",
+    "away": "DHRUBA"
+  },
+  {
+    "home": "RAJARSHI",
+    "away": "SAPTARSHI"
+  },
+  {
+    "home": "RAJARSHI",
+    "away": "JEET"
+  },
+  {
+    "home": "SOUMALYA",
+    "away": "SAGE"
+  },
+  {
+    "home": "SOUMALYA",
+    "away": "DHRUBA"
+  },
+  {
+    "home": "SOUMALYA",
+    "away": "SAPTARSHI"
+  },
+  {
+    "home": "SOUMALYA",
+    "away": "JEET"
+  },
+  {
+    "home": "SAGE",
+    "away": "DHRUBA"
+  },
+  {
+    "home": "SAGE",
+    "away": "SAPTARSHI"
+  },
+  {
+    "home": "SAGE",
+    "away": "JEET"
+  },
+  {
+    "home": "DHRUBA",
+    "away": "SAPTARSHI"
+  },
+  {
+    "home": "DHRUBA",
+    "away": "JEET"
+  },
+  {
+    "home": "SAPTARSHI",
+    "away": "JEET"
+  }
+]

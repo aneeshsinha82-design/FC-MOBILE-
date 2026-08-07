@@ -1,0 +1,4 @@
+body{margin:0;background:#0d1117;color:#fff;font-family:Arial}header{background:linear-gradient(90deg,#3b0,#06c);padding:20px;text-align:center}
+.cards{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;padding:15px}.card{background:#1d2430;padding:12px 20px;border-radius:10px}
+table{width:95%;margin:auto;border-collapse:collapse}th,td{padding:10px;border:1px solid #333;text-align:center}th{background:#18253b}.top{background:#0b5}
+h2{padding-left:2.5%}ul{width:95%;margin:auto}footer{text-align:center;padding:20px;color:#aaa}
