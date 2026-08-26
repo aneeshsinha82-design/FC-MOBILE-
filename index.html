@@ -1,91 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>FC MOBILE — Standings</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
-
-<header class="site-header">
-  <div class="brand">⚽ FC MOBILE</div>
-  <div class="subtitle">League Standings</div>
-</header>
-
 <main class="page">
   <section class="standings-panel">
     <div class="panel-title">
-      <div>
-        <div class="eyebrow">Table</div>
-        <h1>Standings</h1>
-      </div>
-      <div class="season">
-        <span>Season</span>
-        <strong>2026-27 <span class="arrow">▼</span></strong>
-      </div>
+      <div><div class="eyebrow">Table</div><h1>Standings</h1></div>
+      <div class="season"><span>Season</span><strong>2026–27</strong><span class="arrow">▾</span></div>
     </div>
-
     <div class="table-scroll">
       <table>
-        <thead>
-          <tr>
-            <th class="pos-head">#</th>
-            <th class="club-head">Club</th>
-            <th>MP</th>
-            <th>W</th>
-            <th>D</th>
-            <th>L</th>
-            <th>GF</th>
-            <th>GA</th>
-            <th>GD</th>
-            <th class="pts-head">Pts</th>
-          </tr>
-        </thead>
+        <thead><tr><th class="pos-head">#</th><th class="club-head">Club</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th class="pts-head">Pts</th></tr></thead>
         <tbody id="tb"></tbody>
       </table>
     </div>
   </section>
 </main>
-
-<footer>Only repository owner can update data.</footer>
-
 <script>
-fetch('data.json')
-  .then(r => r.json())
-  .then(teams => {
-    teams.sort((a,b) =>
-      b.pts-a.pts || b.gd-a.gd || b.gf-a.gf || a.team.localeCompare(b.team)
-    );
-
-    const tb = document.getElementById('tb');
-
-    teams.forEach((t,i) => {
-      const pos = i + 1;
-      let zone = 'neutral';
-      if (pos === 1) zone = 'champions';
-      else if (pos <= 4) zone = 'europe';
-      else if (pos >= Math.max(teams.length - 2, 1)) zone = 'relegation';
-
-      tb.innerHTML += `
-        <tr class="${zone}">
-          <td class="position">${pos}</td>
-          <td class="club"><span class="club-mark">${t.team.substring(0,2)}</span>${t.team}</td>
-          <td>${t.p}</td>
-          <td>${t.w}</td>
-          <td>${t.d}</td>
-          <td>${t.l}</td>
-          <td>${t.gf}</td>
-          <td>${t.ga}</td>
-          <td>${t.gd}</td>
-          <td class="points">${t.pts}</td>
-        </tr>`;
-    });
-  })
-  .catch(() => {
-    document.getElementById('tb').innerHTML = '<tr><td colspan="10">Unable to load standings data.</td></tr>';
-  });
+fetch('data.json?v=2').then(r=>r.json()).then(teams=>{
+ teams.sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf||a.team.localeCompare(b.team));
+ const tb=document.getElementById('tb');
+ tb.innerHTML=teams.map((t,i)=>`<tr class="${i===0?'champion-row':''}"><td class="position">${i+1}</td><td class="club"><span class="club-mark">${t.team.slice(0,2)}</span>${t.team}</td><td>${t.p}</td><td>${t.w}</td><td>${t.d}</td><td>${t.l}</td><td>${t.gf}</td><td>${t.ga}</td><td>${t.gd}</td><td class="points">${t.pts}</td></tr>`).join('');
+}).catch(()=>document.getElementById('tb').innerHTML='<tr><td colspan="10">Unable to load standings data.</td></tr>');
 </script>
-
 </body>
 </html>
