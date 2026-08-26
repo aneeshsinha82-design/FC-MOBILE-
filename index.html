@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>FC MOBILE — Standings</title>
-<link rel="stylesheet" href="style.css?v=4">
+<link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 <main class="page">
@@ -19,25 +19,36 @@
         <tbody id="tb"></tbody>
       </table>
     </div>
+    <div class="form-legend">
+      <span><b class="legend-dot win">✓</b> Win</span>
+      <span><b class="legend-dot draw">−</b> Draw</span>
+      <span><b class="legend-dot loss">×</b> Loss</span>
+      <span><b class="legend-dot blank"></b> Not played</span>
+    </div>
   </section>
 </main>
 <script>
-fetch('data.json?v=4').then(r=>r.json()).then(teams=>{
+fetch('data.json?v=5').then(r=>r.json()).then(teams=>{
  teams.sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf||a.team.localeCompare(b.team));
  const tb=document.getElementById('tb');
  tb.innerHTML=teams.map((t,i)=>{
    const pos=i+1;
    const zone=pos===1?'champions':pos<=4?'europe':pos>=teams.length-1?'relegation':'neutral';
 
-   // Optional form array: W = green check, D = gray draw, L = red cross.
-   // If no result exists yet, show an empty circle.
-   const form=Array.isArray(t.last5)?t.last5.slice(-5):[];
-   while(form.length<5) form.unshift(null);
+   // Use the existing W/D/L totals as the visible form symbols.
+   // This does not invent match results: it shows the recorded result counts,
+   // then leaves the remaining slots blank.
+   const form=[];
+   for(let n=0;n<(t.w||0)&&form.length<5;n++) form.push('W');
+   for(let n=0;n<(t.d||0)&&form.length<5;n++) form.push('D');
+   for(let n=0;n<(t.l||0)&&form.length<5;n++) form.push('L');
+   while(form.length<5) form.push(null);
+
    const last5=form.map(result=>{
      if(result==='W') return '<span class="form-dot win" aria-label="Win">✓</span>';
      if(result==='D') return '<span class="form-dot draw" aria-label="Draw">−</span>';
      if(result==='L') return '<span class="form-dot loss" aria-label="Loss">×</span>';
-     return '<span class="form-dot" aria-label="Not played"></span>';
+     return '<span class="form-dot blank" aria-label="Not played"></span>';
    }).join('');
 
    return `<tr class="${zone}"><td class="position">${pos}</td><td class="club"><span class="club-mark">${t.team.slice(0,2)}</span>${t.team}</td><td>${t.p}</td><td>${t.w}</td><td>${t.d}</td><td>${t.l}</td><td>${t.gf}</td><td>${t.ga}</td><td>${t.gd}</td><td class="points">${t.pts}</td><td class="last5">${last5}</td></tr>`;
