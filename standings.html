@@ -52,6 +52,14 @@ fetch('data.json?v=5').then(r=>r.json()).then(teams=>{
    return `<tr class="${zone}"><td class="position">${pos}</td><td class="club"><span class="club-mark">${t.team.slice(0,2)}</span>${t.team}</td><td>${t.p}</td><td>${t.w}</td><td>${t.d}</td><td>${t.l}</td><td>${t.gf}</td><td>${t.ga}</td><td>${t.gd}</td><td class="points">${t.pts}</td><td class="last5">${last5}</td></tr>`;
  }).join('');
 }).catch(()=>document.getElementById('tb').innerHTML='<tr><td colspan="11">Unable to load standings data.</td></tr>');
+  // When arriving from Page 1, browser Back returns there naturally.
+  // If Page 2 is opened directly, Back still takes the user to Page 1.
+  if(!history.state || history.state.page !== 'standings'){
+    history.replaceState({page:'standings'}, '', location.href);
+  }
+  window.addEventListener('popstate', () => {
+    location.href='index.html';
+  });
 </script>
 </body>
 </html>
