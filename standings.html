@@ -32,7 +32,7 @@
   </section>
 </main>
 <script>
-fetch('data.json?v=5').then(r=>r.json()).then(teams=>{
+fetch('data.json?v=6').then(r=>r.json()).then(teams=>{
  teams.sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf||a.team.localeCompare(b.team));
  const tb=document.getElementById('tb');
  tb.innerHTML=teams.map((t,i)=>{
