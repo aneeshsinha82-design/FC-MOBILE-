@@ -19,7 +19,7 @@ footer{position:fixed;z-index:3;bottom:20px;left:0;width:100%;padding:0 clamp(20
 </style>
 </head>
 <body>
-<video class="bg-video" autoplay muted loop playsinline controlslist="nodownload"><source src="video_2026-08-29_18-55-29.mp4" type="video/mp4"></video><div class="shade"></div>
+<video class="bg-video" autoplay muted loop playsinline controlslist="nodownload"><source src="video_2026-08-29_18-55-29.mp4?v=2" type="video/mp4"></video><div class="shade"></div>
 <header><div><div class="brand"><b>FC</b> MOBILE</div><div class="tag">FAN STANDINGS HUB</div></div><div class="status">● LIVE SEASON 2026–27</div></header>
 <main class="hero">
 <div class="kicker">Enter the arena</div>
@@ -31,7 +31,10 @@ footer{position:fixed;z-index:3;bottom:20px;left:0;width:100%;padding:0 clamp(20
 <footer><div>© 2026 FC MOBILE FAN PROJECT</div><div class="footer-right">WATCH • EXPLORE • COMPETE</div></footer>
 <script>
 const video=document.querySelector('.bg-video');
-video.muted=true; video.play().catch(()=>{});
+video.muted=true;
+video.load();
+video.play().catch(()=>{});
+video.addEventListener('canplay',()=>video.play().catch(()=>{}),{once:true});
 document.getElementById('enter').onclick=()=>{document.body.style.transition='opacity .45s';document.body.style.opacity='0';setTimeout(()=>location.href='standings.html',450)};
 </script>
 </body></html>
