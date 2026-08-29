@@ -54,6 +54,12 @@ body.transitioning .transition-table{animation:showTable .16s ease .92s forwards
 .p2-home{position:fixed;top:18px;left:18px;z-index:4;color:#fff;text-decoration:none;font-weight:700;letter-spacing:.08em;background:rgba(0,0,0,.38);border:1px solid rgba(255,255,255,.22);padding:10px 14px;border-radius:999px}
 body.flighting header,body.flighting .hero,body.flighting footer{animation:p1slide .72s cubic-bezier(.18,.82,.22,1) forwards}
 @keyframes p2slide{to{transform:translateX(0)}}@keyframes p1slide{to{opacity:.35;transform:translateX(-26vw) scale(.97)}}@keyframes panelGrow{to{opacity:1;transform:scaleY(1)}}@keyframes rowSerial{to{opacity:1;transform:scaleY(1)}}
+
+/* Keep only the real View Standings button visible on Page 1. The transition copy is hidden until clicked. */
+.transition-layer{display:none!important}
+body.flighting .transition-layer{display:block!important}
+body.flighting .transition-layer .fly-button{display:block!important}
+body:not(.flighting) .transition-layer .fly-button{display:none!important}
 </style>
 </head>
 <body>
