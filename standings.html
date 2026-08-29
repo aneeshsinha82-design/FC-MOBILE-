@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FC MOBILE — Standings</title>
+<link rel="stylesheet" href="style.css?v=6">
+</head>
+<body>
+<video class="background-video" autoplay muted loop playsinline aria-hidden="true">
+  <source src="fc_mobile_background_hd_under25mb.mp4" type="video/mp4">
+</video>
+<main class="page">
+  <a href="index.html" style="position:fixed;top:18px;left:18px;z-index:10;color:#fff;text-decoration:none;font-family:Arial,sans-serif;font-weight:700;letter-spacing:.08em;background:rgba(0,0,0,.38);border:1px solid rgba(255,255,255,.22);padding:10px 14px;border-radius:999px;backdrop-filter:blur(8px)">← HOME</a>
+  <section class="standings-panel">
+    <div class="panel-title">
+      <div class="table-label">Table</div>
+      <div class="season"><span>Season</span><strong>2026-27</strong><span class="arrow">▾</span></div>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th class="pos-head"></th><th class="club-head">Club</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th class="pts-head">Pts</th><th class="last-head">Last 5</th></tr></thead>
+        <tbody id="tb"></tbody>
+      </table>
+    </div>
+    <div class="form-legend">
+      <span><b class="legend-dot win">✓</b> Win</span>
+      <span><b class="legend-dot draw">−</b> Draw</span>
+      <span><b class="legend-dot loss">×</b> Loss</span>
+      <span><b class="legend-dot blank"></b> Not played</span>
+    </div>
+  </section>
+</main>
+<script>
+fetch('data.json?v=5').then(r=>r.json()).then(teams=>{
+ teams.sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf||a.team.localeCompare(b.team));
+ const tb=document.getElementById('tb');
+ tb.innerHTML=teams.map((t,i)=>{
+   const pos=i+1;
+   const zone=pos===1?'champions':pos<=4?'europe':pos>=teams.length-1?'relegation':'neutral';
+   const form=[];
+   for(let n=0;n<(t.w||0)&&form.length<5;n++) form.push('W');
+   for(let n=0;n<(t.d||0)&&form.length<5;n++) form.push('D');
+   for(let n=0;n<(t.l||0)&&form.length<5;n++) form.push('L');
+   while(form.length<5) form.push(null);
+   const last5=form.map(result=>{
+     if(result==='W') return '<span class="form-dot win" aria-label="Win">✓</span>';
+     if(result==='D') return '<span class="form-dot draw" aria-label="Draw">−</span>';
+     if(result==='L') return '<span class="form-dot loss" aria-label="Loss">×</span>';
+     return '<span class="form-dot blank" aria-label="Not played"></span>';
+   }).join('');
+   return `<tr class="${zone}"><td class="position">${pos}</td><td class="club"><span class="club-mark">${t.team.slice(0,2)}</span>${t.team}</td><td>${t.p}</td><td>${t.w}</td><td>${t.d}</td><td>${t.l}</td><td>${t.gf}</td><td>${t.ga}</td><td>${t.gd}</td><td class="points">${t.pts}</td><td class="last5">${last5}</td></tr>`;
+ }).join('');
+}).catch(()=>document.getElementById('tb').innerHTML='<tr><td colspan="11">Unable to load standings data.</td></tr>');
+</script>
+</body>
+</html>
