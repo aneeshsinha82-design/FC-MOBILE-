@@ -43,9 +43,13 @@ fetch('data.json?v=5').then(r=>r.json()).then(teams=>{
  }).join('');
 }).catch(()=>document.getElementById('tb').innerHTML='<tr><td colspan="11">Unable to load standings data.</td></tr>');
 
-// Phone/browser Back: return to Page 1.
+// Phone/browser Back: explicitly route to Page 1.
+history.pushState({standingsGuard:true}, '', location.href);
+let leavingToHome=false;
 window.addEventListener('popstate', function () {
-  window.location.href = 'index.html';
+  if(leavingToHome) return;
+  leavingToHome=true;
+  window.location.replace('index.html');
 });
 </script>
 </body>
