@@ -43,6 +43,17 @@ body.transitioning .transition-table{animation:showTable .16s ease .92s forwards
 @keyframes travelToCenter{0%{opacity:1;transform:translate(-50%,-50%) translateX(0)}48%{opacity:1;transform:translate(-50%,-50%) translateX(58vw)}49%{opacity:0;transform:translate(-50%,-50%) translateX(63vw)}50%{opacity:0;transform:translate(-50%,-50%) translateX(-120vw)}100%{opacity:1;transform:translate(-50%,-50%) translateX(0)}}
 @keyframes stretchToTable{to{width:min(86vw,820px);padding-left:16px;padding-right:16px;border-radius:8px}}@keyframes showTable{to{opacity:1}}@keyframes rowSerial{from{opacity:0;transform:scaleY(.15)}to{opacity:1;transform:scaleY(1)}}
 @media(max-width:700px){.transition-table{width:94vw}.transition-table .last5,.transition-table th:last-child,.transition-table td:last-child{display:none}.transition-table th,.transition-table td{padding:6px 4px;font-size:10px}.transition-table .club{max-width:115px;overflow:hidden;text-overflow:ellipsis}}
+
+/* SEAMLESS PAGE TRANSITION */
+.page2-flight{position:fixed;inset:0;z-index:80;visibility:hidden;transform:translateX(100%);overflow:hidden;will-change:transform}
+.page2-flight.active{visibility:visible;animation:p2slide .72s cubic-bezier(.18,.82,.22,1) forwards}
+.p2-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.page2-flight:after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.35)}
+.p2-content{position:relative;z-index:2;width:100%;max-width:1120px;min-height:100vh;margin:auto;padding:28px;display:flex;align-items:center;justify-content:center}
+.flight-panel{width:100%;max-width:820px;background:rgba(12,18,28,.42);backdrop-filter:blur(5px);border:1px solid rgba(255,255,255,.22);border-radius:8px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.32);opacity:0;transform:scaleY(.03);transform-origin:center}
+.flight-panel.open{animation:panelGrow .18s ease forwards}.flight-panel .panel-title{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid rgba(255,255,255,.18);padding:14px 16px 10px}.flight-panel .table-label{font-size:16px}.flight-panel .season{background:rgba(255,255,255,.14);padding:12px 18px;min-width:145px;border-radius:4px}.flight-panel .season span{display:block;font-size:11px;color:rgba(255,255,255,.7)}.flight-panel table{width:100%;border-collapse:collapse}.flight-panel th,.flight-panel td{height:36px;padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.14);text-align:center;font-size:12px}.flight-panel th{background:rgba(0,0,0,.16);color:rgba(255,255,255,.78)}.flight-panel .club{text-align:left;white-space:nowrap;min-width:190px}.flight-panel .club-mark{display:inline-flex;width:24px;height:24px;margin-right:9px;border-radius:50%;align-items:center;justify-content:center;background:rgba(255,255,255,.16);font-size:10px}.flight-panel .points{font-weight:800}.flight-panel .last5{text-align:left;white-space:nowrap}.flight-panel .form-dot{display:inline-flex;width:18px;height:18px;border:2px solid #b9bdc5;border-radius:50%;margin:0 2px;align-items:center;justify-content:center;font-size:12px}.flight-panel .form-dot.win{border-color:#34a853;color:#34a853}.flight-panel .form-dot.loss{border-color:#ea4335;color:#ea4335}.flight-panel .form-dot.draw{border-color:#d7dce3}.flight-panel .form-dot.blank{color:transparent}.flight-panel tbody tr{opacity:0;transform:scaleY(.08);transform-origin:center}
+.p2-home{position:fixed;top:18px;left:18px;z-index:4;color:#fff;text-decoration:none;font-weight:700;letter-spacing:.08em;background:rgba(0,0,0,.38);border:1px solid rgba(255,255,255,.22);padding:10px 14px;border-radius:999px}
+body.flighting header,body.flighting .hero,body.flighting footer{animation:p1slide .72s cubic-bezier(.18,.82,.22,1) forwards}
+@keyframes p2slide{to{transform:translateX(0)}}@keyframes p1slide{to{opacity:.35;transform:translateX(-26vw) scale(.97)}}@keyframes panelGrow{to{opacity:1;transform:scaleY(1)}}@keyframes rowSerial{to{opacity:1;transform:scaleY(1)}}
 </style>
 </head>
 <body>
@@ -55,20 +66,26 @@ body.transitioning .transition-table{animation:showTable .16s ease .92s forwards
 <button class="cta" id="enter">VIEW STANDINGS →</button>
 <div class="hint">Enter the standings hub</div>
 </main>
-<div class="transition-layer" aria-hidden="true"><div class="fly-button">VIEW STANDINGS →</div><div class="transition-table"><div class="panel-title"><div class="table-label">Table</div><div class="season"><span>Season</span><br><strong>2026-27</strong></div></div><div class="table-scroll"><table><thead><tr><th>#</th><th class="club-head">Club</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th><th>Last 5</th></tr></thead><tbody id="transitionTb"></tbody></table></div></div></div><footer><div>© 2026 FC MOBILE FAN PROJECT</div><div class="footer-right">WATCH • EXPLORE • COMPETE</div></footer>
+<div class="page2-flight" id="page2Flight"><video class="p2-video" muted autoplay loop playsinline preload="auto"><source src="fc_mobile_background_hd_under25mb.mp4" type="video/mp4"></video><a class="p2-home" href="#" id="p2Home">← HOME</a><div class="p2-content"><section class="flight-panel" id="flightPanel"><div class="panel-title"><div class="table-label">Table</div><div class="season"><span>Season</span><strong>2026-27</strong></div></div><div class="table-scroll"><table><thead><tr><th>#</th><th>Club</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th><th>Last 5</th></tr></thead><tbody id="flightTb"></tbody></table></div></section></div></div><div class="transition-layer" aria-hidden="true"><div class="fly-button">VIEW STANDINGS →</div><div class="transition-table"><div class="panel-title"><div class="table-label">Table</div><div class="season"><span>Season</span><br><strong>2026-27</strong></div></div><div class="table-scroll"><table><thead><tr><th>#</th><th class="club-head">Club</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th><th>Last 5</th></tr></thead><tbody id="transitionTb"></tbody></table></div></div></div><footer><div>© 2026 FC MOBILE FAN PROJECT</div><div class="footer-right">WATCH • EXPLORE • COMPETE</div></footer>
 <script>
-const video=document.querySelector('.bg-video');
-video.muted=true; video.load(); video.play().catch(()=>{});
-video.addEventListener('canplay',()=>video.play().catch(()=>{}),{once:true});
-let previewTeams=[];
-fetch('data.json?v=5').then(r=>r.json()).then(teams=>{previewTeams=teams.sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf||a.team.localeCompare(b.team));});
-function dots(t){const a=[];for(let i=0;i<(t.w||0)&&a.length<5;i++)a.push('W');for(let i=0;i<(t.d||0)&&a.length<5;i++)a.push('D');for(let i=0;i<(t.l||0)&&a.length<5;i++)a.push('L');while(a.length<5)a.push(null);return a.map(x=>x==='W'?'<span class="form-dot win">✓</span>':x==='D'?'<span class="form-dot draw">−</span>':x==='L'?'<span class="form-dot loss">×</span>':'<span class="form-dot blank"></span>').join('')}
-function buildPreview(){document.getElementById('transitionTb').innerHTML=previewTeams.slice(0,10).map((t,i)=>`<tr><td>${i+1}</td><td class="club"><span class="club-mark">${t.team.slice(0,2)}</span>${t.team}</td><td>${t.p}</td><td>${t.w}</td><td>${t.d}</td><td>${t.l}</td><td>${t.gf}</td><td>${t.ga}</td><td>${t.gd}</td><td class="points">${t.pts}</td><td class="last5">${dots(t)}</td></tr>`).join('')}
-document.getElementById('enter').onclick=()=>{
- if(document.body.classList.contains('transitioning'))return;
- buildPreview(); document.body.classList.add('transitioning');
- const order=[4,3,2,1,0,5,6,7,8,9];
- setTimeout(()=>{const rows=[...document.querySelectorAll('#transitionTb tr')];order.forEach((idx,n)=>{if(rows[idx])rows[idx].style.animation='rowSerial .24s cubic-bezier(.2,.8,.2,1) '+(n*.13)+'s forwards'})},1080);
- setTimeout(()=>location.href='standings.html',2600);
-};
+const video=document.querySelector('.bg-video');video.muted=true;video.play().catch(()=>{});
+let teamsData=[],flightOpen=false;
+fetch('data.json?v=5').then(r=>r.json()).then(t=>teamsData=t.sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf||a.team.localeCompare(b.team)));
+function fd(t){let a=[];for(let i=0;i<(t.w||0)&&a.length<5;i++)a.push('W');for(let i=0;i<(t.d||0)&&a.length<5;i++)a.push('D');for(let i=0;i<(t.l||0)&&a.length<5;i++)a.push('L');while(a.length<5)a.push('');return a.map(x=>'<span class="form-dot '+(x==='W'?'win':x==='L'?'loss':x==='D'?'draw':'blank')+'">'+(x==='W'?'✓':x==='L'?'×':x==='D'?'−':'')+'</span>').join('')}
+function build(){document.getElementById('flightTb').innerHTML=teamsData.map((t,i)=>'<tr><td>'+(i+1)+'</td><td class="club"><span class="club-mark">'+t.team.slice(0,2)+'</span>'+t.team+'</td><td>'+t.p+'</td><td>'+t.w+'</td><td>'+t.d+'</td><td>'+t.l+'</td><td>'+t.gf+'</td><td>'+t.ga+'</td><td>'+t.gd+'</td><td class="points">'+t.pts+'</td><td class="last5">'+fd(t)+'</td></tr>').join('')}
+function openPage2(push){
+ if(flightOpen)return;flightOpen=true;build();
+ const p=document.getElementById('page2Flight'),panel=document.getElementById('flightPanel');
+ document.body.classList.add('flighting');p.classList.add('active');
+ const btn=document.querySelector('.fly-button');
+ btn.animate([{transform:'translate(-50%,-50%) translateX(-46vw) scale(.9)',opacity:1},{transform:'translate(-50%,-50%) translateX(0) scale(1)',opacity:1}],{duration:720,easing:'cubic-bezier(.18,.82,.22,1)',fill:'forwards'});
+ setTimeout(()=>{panel.classList.add('open');btn.style.opacity='0';let rows=[...document.querySelectorAll('#flightTb tr')],order=[4,3,2,1,0,5,6,7,8,9];order.forEach((x,n)=>setTimeout(()=>rows[x]&&rows[x].style.setProperty('animation','rowSerial .25s cubic-bezier(.2,.8,.2,1) forwards'),n*125));},760);
+ setTimeout(()=>{let rows=[...document.querySelectorAll('#flightTb tr')];rows.slice(10).forEach(r=>r.style.setProperty('animation','rowSerial .25s ease forwards'))},2100);
+ if(push)history.pushState({fcStandings:true},'', '#standings');
+}
+function closePage2(){if(!flightOpen)return;flightOpen=false;document.body.classList.remove('flighting');document.getElementById('page2Flight').classList.remove('active');document.getElementById('flightPanel').classList.remove('open');document.querySelector('.fly-button').style.opacity='0';}
+document.getElementById('enter').onclick=()=>openPage2(true);
+document.getElementById('p2Home').onclick=e=>{e.preventDefault();history.back()};
+window.addEventListener('popstate',closePage2);
+if(location.hash==='#standings')setTimeout(()=>openPage2(false),100);
 </script></body></html>
