@@ -164,15 +164,23 @@ function revealTable(){
  });
 }
 
-/* Page routing: Home = no hash, Standings = #standings.
-   The native phone/browser Back button changes the route back to Home. */
-function isStandingsRoute(){return location.hash==='#standings';}
+/* Robust native Back routing.
+   We explicitly create a Home history state, then a Standings state.
+   Therefore the phone/browser Back action always has Page 1 to return to. */
+const HOME_STATE={fcMobilePage:'home'};
+const STANDINGS_STATE={fcMobilePage:'standings'};
+
+function setHomeUrl(){
+ const clean=location.href.split('#')[0];
+ history.replaceState(HOME_STATE,'',clean);
+}
 
 function open(){
  if(opening||body.classList.contains('opened'))return;
- if(!isStandingsRoute()){
-  location.hash='standings'; /* creates a real browser history entry */
-  return; /* hashchange below performs the opening */
+
+ /* Always create a dedicated history entry for Page 2. */
+ if(!history.state||history.state.fcMobilePage!=='standings'){
+  history.pushState(STANDINGS_STATE,'','#standings');
  }
  openFromHistory();
 }
@@ -189,28 +197,35 @@ function openFromHistory(){
  },2350);
 }
 
-function closeToHome(){
- if(isStandingsRoute()){
-  history.back(); /* native route back to Page 1 */
+function returnToHome(){
+ if(body.classList.contains('opened')&&history.state&&history.state.fcMobilePage==='standings'){
+  history.back();
  }else{
   close();
  }
 }
 
-function syncRoute(){
- if(isStandingsRoute()){
+function handleHistory(event){
+ const state=event&&event.state;
+ if(state&&state.fcMobilePage==='standings'){
   openFromHistory();
  }else{
-  close();
+  close(); /* Home state: restore the first page */
  }
 }
 
 enter&&enter.addEventListener('click',open);
-home&&home.addEventListener('click',closeToHome);
-window.addEventListener('hashchange',syncRoute);
-window.addEventListener('popstate',syncRoute);
+home&&home.addEventListener('click',returnToHome);
+window.addEventListener('popstate',handleHistory);
 
-/* If the page is opened/refreshed on either route, show the correct page. */
-if(isStandingsRoute())openFromHistory();
+/* Initialise the current page as Home.
+   If an old #standings URL is opened directly, normalise it to Home so
+   the next click still creates a proper Back -> Home history path. */
+if(location.hash==='#standings'){
+ setHomeUrl();
+ close();
+}else if(!history.state||history.state.fcMobilePage!=='home'){
+ history.replaceState(HOME_STATE,'',location.href);
+}
 })();
 </script></body></html>
