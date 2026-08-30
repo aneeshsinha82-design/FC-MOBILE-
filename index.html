@@ -164,28 +164,18 @@ function revealTable(){
  });
 }
 
-/* Robust native Back routing.
-   We explicitly create a Home history state, then a Standings state.
-   Therefore the phone/browser Back action always has Page 1 to return to. */
-const HOME_STATE={fcMobilePage:'home'};
-const STANDINGS_STATE={fcMobilePage:'standings'};
+/* Deterministic two-page navigation.
+   Every visit starts at Page 1. Enter creates one Page 2 history entry.
+   Native phone/browser Back then always returns to Page 1. */
+let navigatingFromPop=false;
+const cleanUrl=location.pathname+location.search;
 
-function setHomeUrl(){
- const clean=location.href.split('#')[0];
- history.replaceState(HOME_STATE,'',clean);
+function showHome(){
+ navigatingFromPop=false;
+ close();
 }
 
-function open(){
- if(opening||body.classList.contains('opened'))return;
-
- /* Always create a dedicated history entry for Page 2. */
- if(!history.state||history.state.fcMobilePage!=='standings'){
-  history.pushState(STANDINGS_STATE,'','#standings');
- }
- openFromHistory();
-}
-
-function openFromHistory(){
+function showStandings(){
  if(opening||body.classList.contains('opened'))return;
  opening=true;
  body.classList.add('transitioning','opening');
@@ -197,35 +187,36 @@ function openFromHistory(){
  },2350);
 }
 
-function returnToHome(){
- if(body.classList.contains('opened')&&history.state&&history.state.fcMobilePage==='standings'){
-  history.back();
- }else{
-  close();
- }
+function open(){
+ if(opening||body.classList.contains('opened'))return;
+ history.pushState({fcMobilePage:2},'',cleanUrl+'#standings');
+ showStandings();
 }
 
-function handleHistory(event){
- const state=event&&event.state;
- if(state&&state.fcMobilePage==='standings'){
-  openFromHistory();
+function returnToHome(){
+ if(body.classList.contains('opened')){
+  history.back();
  }else{
-  close(); /* Home state: restore the first page */
+  showHome();
  }
 }
 
 enter&&enter.addEventListener('click',open);
 home&&home.addEventListener('click',returnToHome);
-window.addEventListener('popstate',handleHistory);
 
-/* Initialise the current page as Home.
-   If an old #standings URL is opened directly, normalise it to Home so
-   the next click still creates a proper Back -> Home history path. */
-if(location.hash==='#standings'){
- setHomeUrl();
- close();
-}else if(!history.state||history.state.fcMobilePage!=='home'){
- history.replaceState(HOME_STATE,'',location.href);
+/* Back/gesture reaches the previous entry, which is always rendered as Page 1. */
+window.addEventListener('popstate',event=>{
+ navigatingFromPop=true;
+ showHome();
+});
+
+/* Normalise stale direct #standings links to Page 1 on initial load.
+   This guarantees a clean Home -> Standings -> Back history chain. */
+if(location.hash){
+ history.replaceState({fcMobilePage:1},'',cleanUrl);
+}else{
+ history.replaceState({fcMobilePage:1},'',cleanUrl);
 }
+showHome();
 })();
 </script></body></html>
