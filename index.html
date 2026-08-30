@@ -42,8 +42,8 @@ body.opening #leftDoor{transform:translateX(-12vw) rotateY(70deg);filter:brightn
 body.opening #rightDoor{transform:translateX(12vw) rotateY(-70deg);filter:brightness(.72)}
 body.opening #leftCurve{opacity:0;transition:opacity .25s}
 body.opened .door-stage{pointer-events:none;opacity:0;transition:opacity .65s ease .4s}
-body.opened #leftDoor{transform:translateX(-105vw) rotateY(86deg);transition:transform .7s ease}
-body.opened #rightDoor{transform:translateX(105vw) rotateY(-86deg);transition:transform .7s ease}
+body.opened #leftDoor{transform:translateX(-105vw) rotateY(86deg);transition:transform .7s ease .02s}
+body.opened #rightDoor{transform:translateX(105vw) rotateY(-86deg);transition:transform .7s ease .02s}
 @media(max-width:650px){.status,.footer-right{display:none}.cta{padding:15px 25px}.panel-title{padding:17px}}
 </style>
 </head>
@@ -77,7 +77,7 @@ function draw(){if(video.readyState>=2){ctxL.clearRect(0,0,innerWidth,innerHeigh
 video.addEventListener('loadeddata',()=>{size();drawing=true;draw()});window.addEventListener('resize',size);
 function form(t){let a=[];for(let i=0;i<(t.w||0)&&a.length<5;i++)a.push('W');for(let i=0;i<(t.d||0)&&a.length<5;i++)a.push('D');for(let i=0;i<(t.l||0)&&a.length<5;i++)a.push('L');while(a.length<5)a.push('');return a.map(x=>'<span class="form-dot '+(x==='W'?'win':x==='L'?'loss':'')+'">'+(x==='W'?'✓':x==='L'?'×':x==='D'?'−':'')+'</span>').join('')}
 fetch('data.json?v=8').then(r=>r.json()).then(a=>{a.sort((x,y)=>y.pts-x.pts||y.gd-x.gd||y.gf-x.gf||x.team.localeCompare(y.team));standingsBody.innerHTML=a.map((t,i)=>'<tr><td>'+(i+1)+'</td><td class="club"><span class="club-mark">'+t.team.slice(0,2)+'</span>'+t.team+'</td><td>'+t.p+'</td><td>'+t.w+'</td><td>'+t.d+'</td><td>'+t.l+'</td><td>'+t.gf+'</td><td>'+t.ga+'</td><td>'+t.gd+'</td><td class="points">'+t.pts+'</td><td>'+form(t)+'</td></tr>').join('')});
-document.getElementById('enter').onclick=()=>{if(isOpen)return;isOpen=true;document.body.classList.add('opening');setTimeout(()=>{document.body.classList.remove('opening');document.body.classList.add('opened');drawing=false},2350)};
+document.getElementById('enter').onclick=()=>{if(isOpen)return;isOpen=true;document.body.classList.add('opening');setTimeout(()=>{document.body.classList.add('opened');drawing=false},2350)};
 document.getElementById('homeBtn').onclick=()=>{document.body.classList.remove('opened','opening');stage.style.opacity='1';stage.style.pointerEvents='auto';isOpen=false;drawing=true;draw();document.getElementById('leftDoor').style.transform='';document.getElementById('rightDoor').style.transform='';setTimeout(()=>stage.style.opacity='',700)};
 </script>
 </body></html>
