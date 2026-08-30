@@ -28,19 +28,20 @@ th{font-size:11px;color:#9ba8a0;letter-spacing:.08em;background:rgba(0,0,0,.18)}
 
 /* PAGE 1 IS A REAL TWO-DOOR LAYER */
 .door-stage{position:fixed;inset:0;z-index:10;perspective:1800px;perspective-origin:50% 50%;pointer-events:auto}
-.door{position:absolute;top:0;width:50%;height:100%;overflow:hidden;transform-style:preserve-3d;will-change:transform;transition:transform 2.25s cubic-bezier(.18,.72,.18,1),filter 2.25s ease}
-.door-left{left:0;transform-origin:left center;border-right:1px solid rgba(88,245,138,.7);box-shadow:inset -18px 0 40px rgba(0,0,0,.5)}
-.door-right{right:0;transform-origin:right center;border-left:1px solid rgba(88,245,138,.7);box-shadow:inset 18px 0 40px rgba(0,0,0,.5)}
+.door{position:absolute;top:0;width:60vw;height:100%;overflow:hidden;transform-style:preserve-3d;will-change:transform;transition:transform 2.25s cubic-bezier(.18,.72,.18,1),filter 2.25s ease}
+/* CURVED, ORGANIC CENTRE SEAM — matching the hand-drawn design */
+.door-left{left:0;transform-origin:left center;clip-path:polygon(0 0,83.33% 0,82.5% 5%,80.8% 11%,80.8% 18%,82.8% 25%,85.5% 33%,86.2% 42%,84.6% 50%,80.5% 58%,79.2% 66%,81.5% 74%,85.2% 82%,86.2% 91%,84.4% 100%,0 100%);box-shadow:inset -18px 0 40px rgba(0,0,0,.5)}
+.door-right{right:0;transform-origin:right center;clip-path:polygon(16.67% 0,100% 0,100% 100%,15.6% 100%,13.8% 91%,14.8% 82%,18.5% 74%,20.8% 66%,19.5% 58%,15.4% 50%,13.8% 42%,14.5% 33%,17.2% 25%,19.2% 18%,19.2% 11%,17.5% 5%);box-shadow:inset 18px 0 40px rgba(0,0,0,.5)}
 .door-video{position:absolute;top:0;width:100vw;height:100vh;object-fit:cover;max-width:none;filter:brightness(.78)}
-.door-left .door-video{left:0}.door-right .door-video{right:-50vw}
+.door-left .door-video{left:0}.door-right .door-video{right:-40vw}
 .door-glass{position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.12),transparent 18%,transparent 72%,rgba(37,233,101,.08));border:1px solid rgba(255,255,255,.12);pointer-events:none;backdrop-filter:blur(.3px)}
 .door-left .door-glass{border-left-color:rgba(88,245,138,.3)}.door-right .door-glass{border-right-color:rgba(88,245,138,.3)}
 .door-shine{position:absolute;top:0;bottom:0;width:2px;background:#8affaf;box-shadow:0 0 16px #25e965,0 0 35px rgba(37,233,101,.55)}
-.door-left .door-shine{right:-1px}.door-right .door-shine{left:-1px}
+.curve-line{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;filter:drop-shadow(0 0 8px rgba(37,233,101,.9))}.curve-line path{fill:none;stroke:#8affaf;stroke-width:.55;vector-effect:non-scaling-stroke}.curve-right path{stroke:#8affaf}
 
 /* SINGLE OVERLAY, CLIPPED BY EACH DOOR SO TEXT ALSO SPLITS */
 .door-copy{position:absolute;inset:0;width:100vw;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px 20px 40px}
-.door-left .door-copy{clip-path:inset(0 50% 0 0)}.door-right .door-copy{clip-path:inset(0 0 0 50%)}
+.door-left .door-copy{clip-path:inset(0 40% 0 0)}.door-right .door-copy{clip-path:inset(0 0 0 40%)}
 header{position:absolute;top:0;left:0;width:100vw;padding:26px clamp(20px,5vw,72px);display:flex;justify-content:space-between;align-items:center}
 .brand{font-size:clamp(20px,2.1vw,34px);font-weight:900;font-style:italic;letter-spacing:-1px}.brand b{color:#21e85e}.tag{font-size:10px;letter-spacing:.28em;color:#a8b6ae;margin-top:4px}
 .status{font-size:11px;letter-spacing:.15em;border:1px solid rgba(42,237,105,.35);padding:9px 14px;border-radius:999px;background:rgba(4,20,10,.38)}
@@ -53,11 +54,11 @@ h1{margin:0;font-size:clamp(46px,9vw,130px);line-height:.88;letter-spacing:-.06e
 footer{position:absolute;bottom:20px;left:0;width:100vw;padding:0 clamp(20px,5vw,72px);display:flex;justify-content:space-between;color:#78857d;font-size:10px;letter-spacing:.12em}
 
 /* SLOW 3D DOOR OPEN */
-body.opening .door-left{transform:translateX(-18vw) rotateY(72deg);filter:brightness(.75)}
-body.opening .door-right{transform:translateX(18vw) rotateY(-72deg);filter:brightness(.75)}
+body.opening .door-left{transform:translateX(-16vw) rotateY(70deg);filter:brightness(.75)}
+body.opening .door-right{transform:translateX(16vw) rotateY(-70deg);filter:brightness(.75)}
 body.opened .door-stage{pointer-events:none}
-body.opened .door-left{transform:translateX(-54vw) rotateY(86deg);transition:transform .75s ease}
-body.opened .door-right{transform:translateX(54vw) rotateY(-86deg);transition:transform .75s ease}
+body.opened .door-left{transform:translateX(-64vw) rotateY(86deg);transition:transform .75s ease}
+body.opened .door-right{transform:translateX(64vw) rotateY(-86deg);transition:transform .75s ease}
 body.opened .door-stage{transition:opacity .8s ease .5s;opacity:0}
 body.opening .cta{pointer-events:none}
 
@@ -82,7 +83,7 @@ body.opened .home-btn{opacity:1;pointer-events:auto}
 <section class="door-stage" id="doorStage" aria-label="FC Mobile entrance">
   <div class="door door-left">
     <video class="door-video" autoplay muted loop playsinline><source src="video_2026-08-29_18-55-29.mp4?v=2" type="video/mp4"></video>
-    <div class="door-glass"></div><div class="door-shine"></div>
+    <div class="door-glass"></div><svg class="curve-line" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M83 0 C80 10 80 18 83 25 C88 34 87 43 84 50 C79 59 79 66 82 74 C87 83 87 92 84 100"/></svg>
     <div class="door-copy">
       <header><div><div class="brand"><b>FC</b> MOBILE</div><div class="tag">FAN STANDINGS HUB</div></div><div class="status">● LIVE SEASON 2026–27</div></header>
       <div class="kicker">Enter the arena</div><h1>THE <span>GAME</span><br>STARTS HERE.</h1>
@@ -93,7 +94,7 @@ body.opened .home-btn{opacity:1;pointer-events:auto}
   </div>
   <div class="door door-right">
     <video class="door-video" autoplay muted loop playsinline><source src="video_2026-08-29_18-55-29.mp4?v=2" type="video/mp4"></video>
-    <div class="door-glass"></div><div class="door-shine"></div>
+    <div class="door-glass"></div><svg class="curve-line curve-right" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M17 0 C20 10 20 18 17 25 C12 34 13 43 16 50 C21 59 21 66 18 74 C13 83 13 92 16 100"/></svg>
     <div class="door-copy">
       <header><div><div class="brand"><b>FC</b> MOBILE</div><div class="tag">FAN STANDINGS HUB</div></div><div class="status">● LIVE SEASON 2026–27</div></header>
       <div class="kicker">Enter the arena</div><h1>THE <span>GAME</span><br>STARTS HERE.</h1>
