@@ -32,14 +32,15 @@
   </section>
 </main>
 <script>
-fetch('data.json?v=7').then(r=>r.json()).then(teams=>{
+fetch('data.json?v=8').then(r=>r.json()).then(teams=>{
  teams.sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf||a.team.localeCompare(b.team));
  const tb=document.getElementById('tb');
  tb.innerHTML=teams.map((t,i)=>{
    const pos=i+1, zone=pos===1?'champions':pos<=4?'europe':pos>=teams.length-1?'relegation':'neutral';
    const form=Array.isArray(t.last5)?t.last5.slice(0,5):[];
    while(form.length<5)form.push('N');
-   const last5=form.map(r=>r==='W'?'<span class="form-dot win" title="Win">W</span>':r==='D'?'<span class="form-dot draw" title="Draw">D</span>':r==='L'?'<span class="form-dot loss" title="Loss">L</span>':'<span class="form-dot blank" title="Not played">–</span>').join('');
+   let latest=-1; for(let j=form.length-1;j>=0;j--){if(['W','D','L'].includes(form[j])){latest=j;break}}
+   const last5=form.map((r,j)=>{const latestClass=j===latest?' latest':'';return r==='W'?'<span class="form-dot win'+latestClass+'" title="Win">✓</span>':r==='D'?'<span class="form-dot draw'+latestClass+'" title="Draw">−</span>':r==='L'?'<span class="form-dot loss'+latestClass+'" title="Loss">×</span>':'<span class="form-dot blank" title="Not played"></span>'}).join('');
    return `<tr class="${zone}"><td class="position">${pos}</td><td class="club"><span class="club-mark">${t.team.slice(0,2)}</span>${t.team}</td><td>${t.p}</td><td>${t.w}</td><td>${t.d}</td><td>${t.l}</td><td>${t.gf}</td><td>${t.ga}</td><td>${t.gd}</td><td class="points">${t.pts}</td><td class="last5">${last5}</td></tr>`;
  }).join('');
 }).catch(()=>document.getElementById('tb').innerHTML='<tr><td colspan="11">Unable to load standings data.</td></tr>');
