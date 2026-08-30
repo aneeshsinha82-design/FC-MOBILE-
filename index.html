@@ -51,76 +51,128 @@ body.opened #leftDoor{transform:translateX(-105vw) rotateY(86deg);transition:tra
 (() => {
 'use strict';
 const $=s=>document.querySelector(s);
-const enter=$('#enter'),home=$('#homeBtn'),body=document.body;
-const stage=$('#doorStage'),panel=$('.standings-panel'),tbody=$('#standingsBody'),reveal=$('#splitReveal');
-const source=$('#sourceVideo'),p2=$('.p2-video');
-let opening=false,dataReady=false;
+const body=document.body, enter=$('#enter'), home=$('#homeBtn');
+const panel=$('.standings-panel'), tbody=$('#standingsBody'), reveal=$('#splitReveal');
+const source=$('#sourceVideo'), p2=$('.p2-video');
+const left=$('#leftDoor'), right=$('#rightDoor');
+let opening=false, dataReady=false, revealTimer=null, raf=0;
+
+/* Restore the original moving-video-door effect. */
+function setupDoors(){
+ if(!source||!left||!right)return;
+ const cl=left.getContext('2d'), cr=right.getContext('2d');
+ function size(){
+  const d=Math.min(window.devicePixelRatio||1,2);
+  [left,right].forEach(x=>{x.width=Math.round(innerWidth*d);x.height=Math.round(innerHeight*d);x.style.width=innerWidth+'px';x.style.height=innerHeight+'px';});
+ }
+ function paint(){
+  if(source.readyState>=2){
+   cl.setTransform(1,0,0,1,0,0);cr.setTransform(1,0,0,1,0,0);
+   cl.clearRect(0,0,left.width,left.height);cr.clearRect(0,0,right.width,right.height);
+   cl.drawImage(source,0,0,left.width,left.height);cr.drawImage(source,0,0,right.width,right.height);
+   requestAnimationFrame(paint);
+  } else requestAnimationFrame(paint);
+ }
+ size();window.addEventListener('resize',size);
+ source.addEventListener('loadeddata',paint,{once:true});
+ source.play().catch(()=>{});
+}
+setupDoors();
 
 function render(rows){
- rows.sort((a,b)=>(b.pts-a.pts)||(b.gd-a.gd)||(b.gf-a.gf)||String(a.team).localeCompare(String(b.team)));
- tbody.innerHTML=rows.map((t,i)=>'<tr><td>'+(i+1)+'</td><td class="club"><span class="club-mark">'+String(t.team).slice(0,2)+'</span>'+t.team+'</td><td>'+t.p+'</td><td>'+t.w+'</td><td>'+t.d+'</td><td>'+t.l+'</td><td>'+t.gf+'</td><td>'+t.ga+'</td><td>'+t.gd+'</td><td class="points">'+t.pts+'</td><td></td></tr>').join('');
+ if(!Array.isArray(rows))rows=[];
+ rows.sort((a,b)=>(Number(b.pts)||0)-(Number(a.pts)||0)||(Number(b.gd)||0)-(Number(a.gd)||0)||(Number(b.gf)||0)-(Number(a.gf)||0)||String(a.team||'').localeCompare(String(b.team||'')));
+ tbody.innerHTML=rows.map((t,i)=>'<tr><td>'+ (i+1) +'</td><td class="club"><span class="club-mark">'+String(t.team||'').slice(0,2)+'</span>'+String(t.team||'')+'</td><td>'+Number(t.p||0)+'</td><td>'+Number(t.w||0)+'</td><td>'+Number(t.d||0)+'</td><td>'+Number(t.l||0)+'</td><td>'+Number(t.gf||0)+'</td><td>'+Number(t.ga||0)+'</td><td>'+Number(t.gd||0)+'</td><td class="points">'+Number(t.pts||0)+'</td><td></td></tr>').join('');
  dataReady=true;
 }
-fetch('data.json?v='+Date.now()).then(r=>r.json()).then(render).catch(()=>{dataReady=true;});
+fetch('data.json?ts='+Date.now(),{cache:'no-store'})
+ .then(r=>{if(!r.ok)throw new Error('data.json '+r.status);return r.json()})
+ .then(render)
+ .catch(err=>{console.error(err);render([]);});
 
+function clearReveal(){
+ cancelAnimationFrame(raf);clearTimeout(revealTimer);
+ reveal.classList.remove('active');reveal.innerHTML='';
+}
+
+function showFinal(){
+ clearReveal();
+ panel.style.visibility='visible';
+ panel.style.opacity='1';
+ panel.classList.add('table-ready');
+}
+
+/* Dynamic row split: the current sorted table is the ONLY data source. */
 function revealTable(){
- if(!dataReady){setTimeout(revealTable,100);return;}
- const rows=[...tbody.children];
- if(!rows.length){panel.style.visibility='visible';panel.style.opacity='1';return;}
- const split=Math.ceil(rows.length/2);
- panel.style.visibility='hidden';panel.style.opacity='0';
- reveal.innerHTML='';
- const rect=panel.getBoundingClientRect();
- const mid=rect.top+rect.height/2;
+ if(!body.classList.contains('opened'))return;
+ if(!dataReady){revealTimer=setTimeout(revealTable,100);return;}
+ const rows=[...tbody.querySelectorAll('tr')];
+ if(!rows.length){showFinal();return;}
 
- function half(kind,items,includeHead){
-   const w=document.createElement('div');w.className='split-half '+kind;
-   w.style.cssText='left:'+rect.left+'px;width:'+rect.width+'px;top:'+mid+'px;height:0px;';
-   const card=document.createElement('div');card.className='split-card';
-   const tw=document.createElement('div');tw.className='table-wrap';
-   const table=document.createElement('table');
-   if(includeHead)table.appendChild(panel.querySelector('thead').cloneNode(true));
-   const tb=document.createElement('tbody');items.forEach(x=>tb.appendChild(x.cloneNode(true)));
-   table.appendChild(tb);tw.appendChild(table);card.appendChild(tw);w.appendChild(card);reveal.appendChild(w);
-   return {w,card};
+ clearReveal();
+ panel.style.visibility='visible';panel.style.opacity='0';
+ const rect=panel.getBoundingClientRect();
+ if(rect.width<10||rect.height<10){revealTimer=setTimeout(revealTable,100);return;}
+
+ const split=Math.ceil(rows.length/2);
+ const mid=rect.top+rect.height/2;
+ panel.style.visibility='hidden';
+
+ function build(kind,items,withHeader){
+  const wrap=document.createElement('div');
+  wrap.className='split-half '+kind;
+  wrap.style.left=rect.left+'px';wrap.style.width=rect.width+'px';
+  wrap.style.top=mid+'px';wrap.style.height='0px';
+  const card=document.createElement('div');card.className='split-card';
+  const tw=document.createElement('div');tw.className='table-wrap';
+  const table=document.createElement('table');
+  if(withHeader)table.appendChild(panel.querySelector('thead').cloneNode(true));
+  const tb=document.createElement('tbody');
+  items.forEach(row=>tb.appendChild(row.cloneNode(true)));
+  table.appendChild(tb);tw.appendChild(table);card.appendChild(tw);wrap.appendChild(card);reveal.appendChild(wrap);
+  return {wrap,card};
  }
- const top=half('top',rows.slice(0,split),true);
- const bottom=half('bottom',rows.slice(split),false);
+ const top=build('top',rows.slice(0,split),true);
+ const bottom=build('bottom',rows.slice(split),false);
  reveal.classList.add('active');
- const th=top.card.getBoundingClientRect().height,bh=bottom.card.getBoundingClientRect().height;
- const begin=performance.now(),dur=2800;
- const tick=now=>{
-   const x=Math.min(1,(now-begin)/dur),e=1-Math.pow(1-x,3);
-   const h1=th*e,h2=bh*e;
-   top.w.style.height=h1+'px';top.w.style.top=(mid-h1)+'px';
-   bottom.w.style.height=h2+'px';bottom.w.style.top=mid+'px';
-   if(x<1)return requestAnimationFrame(tick);
-   panel.style.visibility='visible';panel.style.opacity='1';
-   reveal.classList.remove('active');reveal.innerHTML='';
- };
- requestAnimationFrame(tick);
+
+ requestAnimationFrame(()=>{
+  const topH=Math.max(1,top.card.getBoundingClientRect().height);
+  const bottomH=Math.max(1,bottom.card.getBoundingClientRect().height);
+  const start=performance.now(),duration=2800;
+  function tick(now){
+   const p=Math.min(1,(now-start)/duration),e=1-Math.pow(1-p,3);
+   const h1=topH*e,h2=bottomH*e;
+   top.wrap.style.height=h1+'px';top.wrap.style.top=(mid-h1)+'px';
+   bottom.wrap.style.height=h2+'px';bottom.wrap.style.top=mid+'px';
+   if(p<1){raf=requestAnimationFrame(tick);return;}
+   showFinal();
+  }
+  raf=requestAnimationFrame(tick);
+ });
 }
 
 function open(){
  if(opening||body.classList.contains('opened'))return;
  opening=true;
- // Page 2 is displayed BEFORE doors move: no black gap.
- body.classList.add('transitioning','opening');
- if(p2){p2.play().catch(()=>{});}
+ body.classList.add('transitioning'); /* Page 2 exists behind doors immediately */
+ body.classList.add('opening');
+ if(p2)p2.play().catch(()=>{});
  setTimeout(()=>{
-   body.classList.add('opened');
-   opening=false;
-   setTimeout(revealTable,450);
+  body.classList.add('opened');
+  opening=false;
+  requestAnimationFrame(()=>setTimeout(revealTable,350));
  },2350);
 }
 function close(){
- opening=false;
+ opening=false;clearReveal();
  body.classList.remove('opened','opening','transitioning');
+ panel.classList.remove('table-ready');
  panel.style.visibility='hidden';panel.style.opacity='0';
- reveal.classList.remove('active');reveal.innerHTML='';
+ if(source)source.play().catch(()=>{});
 }
-if(enter)enter.addEventListener('click',open);
-if(home)home.addEventListener('click',close);
-window.addEventListener('popstate',close);
+enter&&enter.addEventListener('click',open);
+home&&home.addEventListener('click',close);
+window.addEventListener('popstate',()=>{if(body.classList.contains('opened'))close();});
 })();
 </script></body></html>
