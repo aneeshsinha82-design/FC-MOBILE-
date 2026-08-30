@@ -96,7 +96,8 @@ function form(t){let a=[];for(let i=0;i<(t.w||0)&&a.length<5;i++)a.push('W');for
 fetch('data.json?v=8').then(r=>r.json()).then(a=>{a.sort((x,y)=>y.pts-x.pts||y.gd-x.gd||y.gf-x.gf||x.team.localeCompare(y.team));standingsBody.innerHTML=a.map((t,i)=>'<tr><td>'+(i+1)+'</td><td class="club"><span class="club-mark">'+t.team.slice(0,2)+'</span>'+t.team+'</td><td>'+t.p+'</td><td>'+t.w+'</td><td>'+t.d+'</td><td>'+t.l+'</td><td>'+t.gf+'</td><td>'+t.ga+'</td><td>'+t.gd+'</td><td class="points">'+t.pts+'</td><td>'+form(t)+'</td></tr>').join('')});
 const panel=document.querySelector('.standings-panel'),splitReveal=document.getElementById('splitReveal');
 function playTableReveal(){
- panel.classList.add('table-ready');
+ panel.classList.remove('table-ready');
+ panel.style.visibility='hidden';
  splitReveal.classList.remove('active');splitReveal.innerHTML='';
  const rect=panel.getBoundingClientRect(),half=rect.height/2;
  splitReveal.innerHTML='';
@@ -110,7 +111,7 @@ function playTableReveal(){
    wrap.appendChild(ghost);splitReveal.appendChild(wrap);
  };
  makeHalf('top');makeHalf('bottom');splitReveal.classList.add('active');
- setTimeout(()=>{panel.classList.add('table-ready');splitReveal.classList.remove('active');splitReveal.innerHTML=''},2080);
+ setTimeout(()=>{splitReveal.classList.remove('active');splitReveal.innerHTML='';panel.style.visibility='visible';panel.classList.add('table-ready')},2080);
 }
 function openStandings(push=true){
  if(isOpen)return;
@@ -125,7 +126,7 @@ function goHome(){
  stage.style.transition='none';
  stage.style.opacity='1';
  stage.style.pointerEvents='auto';
- document.body.classList.remove('opened','opening','table-ready');splitReveal.classList.remove('active');splitReveal.innerHTML='';
+ document.body.classList.remove('opened','opening','table-ready');panel.style.visibility='visible';splitReveal.classList.remove('active');splitReveal.innerHTML='';
  left.style.transition='none';right.style.transition='none';
  left.style.transform='';right.style.transform='';
  void stage.offsetWidth;
