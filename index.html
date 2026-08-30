@@ -164,8 +164,17 @@ function revealTable(){
  });
 }
 
+/* Keep Page 1 and Page 2 as real browser-history states.
+   This makes the phone's native Back button return from standings to Home. */
+if(!history.state||history.state.fcMobilePage!=='home'){
+ history.replaceState({fcMobilePage:'home'},'',location.href);
+}
 function open(){
  if(opening||body.classList.contains('opened'))return;
+ /* Add a history entry immediately so Android/iPhone Back returns here first. */
+ if(!history.state||history.state.fcMobilePage!=='standings'){
+  history.pushState({fcMobilePage:'standings'},'',location.href);
+ }
  opening=true;
  body.classList.add('transitioning'); /* Page 2 exists behind doors immediately */
  body.classList.add('opening');
@@ -184,7 +193,31 @@ function close(){
  if(source)source.play().catch(()=>{});
 }
 enter&&enter.addEventListener('click',open);
-home&&home.addEventListener('click',close);
-window.addEventListener('popstate',()=>{if(body.classList.contains('opened'))close();});
+
+/* On-screen HOME and the phone/browser Back button now behave consistently. */
+home&&home.addEventListener('click',()=>{
+ if(body.classList.contains('opened')&&history.state&&history.state.fcMobilePage==='standings'){
+  history.back();
+ }else close();
+});
+window.addEventListener('popstate',event=>{
+ if(event.state&&event.state.fcMobilePage==='standings'){
+  /* Supports Forward after returning to Home. */
+  if(!body.classList.contains('opened'))openFromHistory();
+ }else{
+  close();
+ }
+});
+function openFromHistory(){
+ if(opening||body.classList.contains('opened'))return;
+ opening=true;
+ body.classList.add('transitioning','opening');
+ if(p2)p2.play().catch(()=>{});
+ setTimeout(()=>{
+  body.classList.add('opened');
+  opening=false;
+  requestAnimationFrame(()=>setTimeout(revealTable,350));
+ },2350);
+}
 })();
 </script></body></html>
