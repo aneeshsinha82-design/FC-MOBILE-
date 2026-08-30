@@ -11,7 +11,7 @@
 .page2{position:fixed;inset:0;z-index:1;background:linear-gradient(135deg,#1b3027,#0b1712 55%,#07100c);overflow:hidden;perspective:1800px}
 .p2-world{position:absolute;inset:-8vh -8vw;transform:scale(.82) translateY(2vh);transform-origin:center;transition:transform 2.4s cubic-bezier(.18,.8,.18,1);will-change:transform}
 body.opened .p2-world{transform:scale(1.035) translateY(-.8vh)}
-.p2-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.48);transform:scale(1.06)}
+.p2-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.72) saturate(1.08);transform:scale(1.06);opacity:1}
 .p2-content{position:relative;z-index:2;min-height:100%;display:flex;align-items:center;justify-content:center;padding:78px 18px 35px}
 .standings-panel{position:relative;width:min(94vw,980px);background:rgba(235,240,245,.10);border:1px solid rgba(255,255,255,.38);border-radius:18px;overflow:hidden;box-shadow:0 25px 90px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.18);backdrop-filter:blur(20px) saturate(125%);-webkit-backdrop-filter:blur(20px) saturate(125%);opacity:1;visibility:visible}
 .standings-panel.table-ready{opacity:1;visibility:visible}
@@ -86,7 +86,8 @@ body.opened #rightDoor{transform:translateX(105vw) rotateY(-86deg);transition:tr
  </div>
 </section>
 <script>
-const video=document.getElementById('sourceVideo'),stage=document.getElementById('doorStage'),left=document.getElementById('leftDoor'),right=document.getElementById('rightDoor');
+const video=document.getElementById('sourceVideo'),p2Video=document.querySelector('.p2-video'),stage=document.getElementById('doorStage'),left=document.getElementById('leftDoor'),right=document.getElementById('rightDoor');
+p2Video.load(); p2Video.play().catch(()=>{});
 const ctxL=left.getContext('2d'),ctxR=right.getContext('2d');let drawing=false,isOpen=false;
 function size(){const dpr=Math.min(window.devicePixelRatio||1,2);[left,right].forEach(c=>{c.width=Math.round(innerWidth*dpr);c.height=Math.round(innerHeight*dpr);c.style.width=innerWidth+'px';c.style.height=innerHeight+'px'});ctxL.setTransform(dpr,0,0,dpr,0,0);ctxR.setTransform(dpr,0,0,dpr,0,0)}
 function draw(){if(video.readyState>=2){ctxL.clearRect(0,0,innerWidth,innerHeight);ctxR.clearRect(0,0,innerWidth,innerHeight);ctxL.drawImage(video,0,0,innerWidth,innerHeight);ctxR.drawImage(video,0,0,innerWidth,innerHeight);stage.classList.add('ready')}if(drawing)requestAnimationFrame(draw)}
