@@ -45,8 +45,10 @@ body.opened #leftDoor{transform:translateX(-105vw) rotateY(86deg);transition:tra
 </style>
 </head>
 <body>
-<section class="page2"><div class="p2-world"><video class="p2-video" autoplay muted loop playsinline preload="auto"><source src="fc_mobile_background_hd_under25mb.mp4" type="video/mp4"></video><button class="home-btn" id="homeBtn">← HOME</button><div class="p2-content"><section class="standings-panel"><div class="panel-title"><h2>LEAGUE STANDINGS</h2><div class="season">Season<strong>2026–27</strong></div></div><div class="table-wrap"><table><thead><tr><th>#</th><th>CLUB</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>PTS</th><th>LAST 5</th></tr></thead><tbody id="standingsBody"></tbody></table></div></section></div></div></section><div class="split-reveal" id="splitReveal"></div>
-<section class="door-stage" id="doorStage"><video id="sourceVideo" autoplay muted loop playsinline><source src="video_2026-08-29_18-55-29.mp4?v=4" type="video/mp4"></video><canvas id="leftDoor" class="door"></canvas><canvas id="rightDoor" class="door"></canvas><div class="door-glass"></div><svg id="leftCurve" class="curve" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M50 0 C48 8 47.5 14 48.5 21 C51 29 53 38 53.5 47 C53.5 55 49 64 47.5 72 C47 80 50 84 52 88 C53 93 53 97 52 100"/></svg><div class="landing-ui"><header><div><div class="brand"><b>FC</b> MOBILE</div><div class="tag">FAN STANDINGS HUB</div></div><div class="status">● LIVE SEASON 2026–27</div></header><div class="kicker">Enter the arena</div><h1>THE <span>GAME</span><br>STARTS HERE.</h1><p class="hero-p">Explore the latest FC Mobile season standings and follow the competition.</p><button class="cta" id="enter">VIEW STANDINGS →</button><div class="hint">Enter the standings hub</div><footer><div>© 2026 FC MOBILE FAN PROJECT</div><div class="footer-right">WATCH • EXPLORE • COMPETE</div></footer></div></section>
+<!-- PAGE 2: STANDINGS SCREEN -->
+<section id="page2" class="app-page page2" aria-label="Standings page"><div class="p2-world"><video class="p2-video" autoplay muted loop playsinline preload="auto"><source src="fc_mobile_background_hd_under25mb.mp4" type="video/mp4"></video><button class="home-btn" id="homeBtn">← HOME</button><div class="p2-content"><section class="standings-panel"><div class="panel-title"><h2>LEAGUE STANDINGS</h2><div class="season">Season<strong>2026–27</strong></div></div><div class="table-wrap"><table><thead><tr><th>#</th><th>CLUB</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>PTS</th><th>LAST 5</th></tr></thead><tbody id="standingsBody"></tbody></table></div></section></div></div></section><div class="split-reveal" id="splitReveal"></div>
+<!-- PAGE 1: HOME / LANDING SCREEN -->
+<section id="page1" class="app-page page1 door-stage" data-page="home" aria-label="Home page"><video id="sourceVideo" autoplay muted loop playsinline><source src="video_2026-08-29_18-55-29.mp4?v=4" type="video/mp4"></video><canvas id="leftDoor" class="door"></canvas><canvas id="rightDoor" class="door"></canvas><div class="door-glass"></div><svg id="leftCurve" class="curve" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M50 0 C48 8 47.5 14 48.5 21 C51 29 53 38 53.5 47 C53.5 55 49 64 47.5 72 C47 80 50 84 52 88 C53 93 53 97 52 100"/></svg><div class="landing-ui"><header><div><div class="brand"><b>FC</b> MOBILE</div><div class="tag">FAN STANDINGS HUB</div></div><div class="status">● LIVE SEASON 2026–27</div></header><div class="kicker">Enter the arena</div><h1>THE <span>GAME</span><br>STARTS HERE.</h1><p class="hero-p">Explore the latest FC Mobile season standings and follow the competition.</p><button class="cta" id="enter">VIEW STANDINGS →</button><div class="hint">Enter the standings hub</div><footer><div>© 2026 FC MOBILE FAN PROJECT</div><div class="footer-right">WATCH • EXPLORE • COMPETE</div></footer></div></section>
 <script>
 (() => {
 'use strict';
@@ -164,59 +166,70 @@ function revealTable(){
  });
 }
 
-/* Deterministic two-page navigation.
-   Every visit starts at Page 1. Enter creates one Page 2 history entry.
-   Native phone/browser Back then always returns to Page 1. */
-let navigatingFromPop=false;
-const cleanUrl=location.pathname+location.search;
+/* PAGE ROUTER — Page 1 is Home, Page 2 is Standings.
+   Back always routes Page 2 -> Page 1 without leaving the site. */
+const page1=$('#page1'), page2=$('#page2');
+const ROUTE_HOME='home', ROUTE_STANDINGS='standings';
+const baseUrl=location.pathname+location.search;
 
-function showHome(){
- navigatingFromPop=false;
- close();
-}
+function currentRoute(){return history.state&&history.state.fcRoute||ROUTE_HOME;}
 
-function showStandings(){
+function activatePage(route,{animate=true}={}){
+ if(route===ROUTE_HOME){
+  clearReveal();
+  body.classList.remove('opening','opened','transitioning');
+  opening=false;
+  if(page1){page1.setAttribute('aria-hidden','false');page1.style.display='block';}
+  if(page2){page2.setAttribute('aria-hidden','true');}
+  return;
+ }
  if(opening||body.classList.contains('opened'))return;
  opening=true;
+ if(page1)page1.setAttribute('aria-hidden','true');
+ if(page2)page2.setAttribute('aria-hidden','false');
  body.classList.add('transitioning','opening');
  if(p2)p2.play().catch(()=>{});
- setTimeout(()=>{
+ const finish=()=>{
   body.classList.add('opened');
+  body.classList.remove('opening');
   opening=false;
   requestAnimationFrame(()=>setTimeout(revealTable,350));
- },2350);
+ };
+ if(animate)setTimeout(finish,2350);else finish();
 }
 
-function open(){
- if(opening||body.classList.contains('opened'))return;
- history.pushState({fcMobilePage:2},'',cleanUrl+'#standings');
- showStandings();
+function goTo(route,{push=true}={}){
+ if(route===ROUTE_STANDINGS){
+  if(push)history.pushState({fcRoute:ROUTE_STANDINGS},'',baseUrl+'#standings');
+  activatePage(ROUTE_STANDINGS);
+ }else{
+  if(push)history.pushState({fcRoute:ROUTE_HOME},'',baseUrl);
+  activatePage(ROUTE_HOME);
+ }
 }
+
+function open(){goTo(ROUTE_STANDINGS,{push:true});}
 
 function returnToHome(){
- if(body.classList.contains('opened')){
-  history.back();
- }else{
-  showHome();
- }
+ /* On-screen Home uses the same route as native Back. */
+ if(currentRoute()===ROUTE_STANDINGS)history.back();
+ else activatePage(ROUTE_HOME);
 }
 
 enter&&enter.addEventListener('click',open);
 home&&home.addEventListener('click',returnToHome);
 
-/* Back/gesture reaches the previous entry, which is always rendered as Page 1. */
+/* Native Android/iPhone browser Back and back gestures. */
 window.addEventListener('popstate',event=>{
- navigatingFromPop=true;
- showHome();
+ const route=event.state&&event.state.fcRoute===ROUTE_STANDINGS
+  ?ROUTE_STANDINGS:ROUTE_HOME;
+ activatePage(route);
 });
 
-/* Normalise stale direct #standings links to Page 1 on initial load.
-   This guarantees a clean Home -> Standings -> Back history chain. */
-if(location.hash){
- history.replaceState({fcMobilePage:1},'',cleanUrl);
-}else{
- history.replaceState({fcMobilePage:1},'',cleanUrl);
+/* One explicit Page 1 entry is always the starting state. */
+if(currentRoute()!==ROUTE_HOME||location.hash){
+ history.replaceState({fcRoute:ROUTE_HOME},'',baseUrl);
 }
-showHome();
+activatePage(ROUTE_HOME,{animate:false});
 })();
 </script></body></html>
