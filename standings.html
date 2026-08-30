@@ -24,21 +24,22 @@
       </table>
     </div>
     <div class="form-legend">
-      <span><b class="legend-dot win">✓</b> Win</span>
-      <span><b class="legend-dot draw">−</b> Draw</span>
-      <span><b class="legend-dot loss">×</b> Loss</span>
-      <span><b class="legend-dot blank"></b> Not played</span>
+      <span><b class="legend-dot win">W</b> Win</span>
+      <span><b class="legend-dot draw">D</b> Draw</span>
+      <span><b class="legend-dot loss">L</b> Loss</span>
+      <span><b class="legend-dot blank">–</b> Not played</span>
     </div>
   </section>
 </main>
 <script>
-fetch('data.json?v=6').then(r=>r.json()).then(teams=>{
+fetch('data.json?v=7').then(r=>r.json()).then(teams=>{
  teams.sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf||a.team.localeCompare(b.team));
  const tb=document.getElementById('tb');
  tb.innerHTML=teams.map((t,i)=>{
    const pos=i+1, zone=pos===1?'champions':pos<=4?'europe':pos>=teams.length-1?'relegation':'neutral';
-   const form=[]; for(let n=0;n<(t.w||0)&&form.length<5;n++)form.push('W'); for(let n=0;n<(t.d||0)&&form.length<5;n++)form.push('D'); for(let n=0;n<(t.l||0)&&form.length<5;n++)form.push('L'); while(form.length<5)form.push(null);
-   const last5=form.map(r=>r==='W'?'<span class="form-dot win">✓</span>':r==='D'?'<span class="form-dot draw">−</span>':r==='L'?'<span class="form-dot loss">×</span>':'<span class="form-dot blank"></span>').join('');
+   const form=Array.isArray(t.last5)?t.last5.slice(0,5):[];
+   while(form.length<5)form.push('N');
+   const last5=form.map(r=>r==='W'?'<span class="form-dot win" title="Win">W</span>':r==='D'?'<span class="form-dot draw" title="Draw">D</span>':r==='L'?'<span class="form-dot loss" title="Loss">L</span>':'<span class="form-dot blank" title="Not played">–</span>').join('');
    return `<tr class="${zone}"><td class="position">${pos}</td><td class="club"><span class="club-mark">${t.team.slice(0,2)}</span>${t.team}</td><td>${t.p}</td><td>${t.w}</td><td>${t.d}</td><td>${t.l}</td><td>${t.gf}</td><td>${t.ga}</td><td>${t.gd}</td><td class="points">${t.pts}</td><td class="last5">${last5}</td></tr>`;
  }).join('');
 }).catch(()=>document.getElementById('tb').innerHTML='<tr><td colspan="11">Unable to load standings data.</td></tr>');
