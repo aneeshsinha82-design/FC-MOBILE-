@@ -60,33 +60,66 @@ function playTableReveal(){
  if(!tableDataReady){setTimeout(playTableReveal,80);return}
  panel.style.visibility='hidden';panel.style.opacity='0';
  splitReveal.innerHTML='';
- const rect=panel.getBoundingClientRect(),half=rect.height/2,mid=rect.top+half;
- function makeHalf(kind){
+ const table=panel.querySelector('table');
+ const header=table.querySelector('thead');
+ const rows=[...table.querySelectorAll('tbody tr')];
+ const n=rows.length;
+ const split=Math.ceil(n/2); // dynamic: middle split, e.g. 8 teams = 4 up / 4 down
+ const rect=panel.getBoundingClientRect();
+
+ function makeGroup(kind, groupRows, isTop){
    const wrap=document.createElement('div');
    wrap.className='split-half '+kind;
-   wrap.style.left=rect.left+'px'; wrap.style.width=rect.width+'px';
-   wrap.style.height='0px'; wrap.style.top=mid+'px';
-   const ghost=panel.cloneNode(true);
-   ghost.classList.remove('standings-panel');
-   ghost.classList.add('standings-ghost');
-   ghost.style.position='absolute';
-   ghost.style.left='0px';
-   ghost.style.width=rect.width+'px';
-   ghost.style.height=rect.height+'px';
-   ghost.style.margin='0';
-   ghost.style.visibility='visible'; ghost.style.opacity='1';
-   ghost.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));
-   // Both halves preserve the SAME table coordinate system.
-   ghost.style.top = kind==='top' ? (-half)+'px' : '0px';
-   wrap.appendChild(ghost); splitReveal.appendChild(wrap); return wrap;
+   wrap.style.left=rect.left+'px';
+   wrap.style.width=rect.width+'px';
+   wrap.style.height='0px';
+
+   const snap=panel.cloneNode(false);
+   snap.className='standings-panel standings-ghost';
+   snap.style.position='absolute';
+   snap.style.left='0';snap.style.top='0';
+   snap.style.width=rect.width+'px';
+   snap.style.height='auto';
+   snap.style.margin='0';
+   snap.style.visibility='visible';snap.style.opacity='1';
+
+   if(isTop) snap.appendChild(header.cloneNode(true));
+   const tw=document.createElement('div');tw.className='table-wrap';
+   const nt=document.createElement('table');
+   if(!isTop) nt.appendChild(header.cloneNode(true));
+   const tb=document.createElement('tbody');
+   groupRows.forEach(r=>tb.appendChild(r.cloneNode(true)));
+   nt.appendChild(tb);tw.appendChild(nt);snap.appendChild(tw);
+   wrap.appendChild(snap);splitReveal.appendChild(wrap);
+   return {wrap,snap};
  }
- const top=makeHalf('top'),bottom=makeHalf('bottom');
+
+ const topRows=rows.slice(0,split);
+ const bottomRows=rows.slice(split);
+ const top=makeGroup('top',topRows,true);
+ const bottom=makeGroup('bottom',bottomRows,false);
+
+ // Measure the actual row-based snapshots, then start exactly at the boundary.
+ const topH=top.snap.getBoundingClientRect().height;
+ const bottomH=bottom.snap.getBoundingClientRect().height;
+ const headerH=header.getBoundingClientRect().height;
+ // bottom snapshot includes its header only for alignment; hide duplicate header region by offsetting it.
+ bottom.snap.style.top=(-headerH)+'px';
+ const bottomVisibleH=Math.max(0,bottomH-headerH);
+ const boundary=rect.top+topH;
+
+ top.wrap.style.top=boundary+'px';
+ bottom.wrap.style.top=boundary+'px';
  splitReveal.classList.add('active');
+
  const start=performance.now(),duration=2800,ease=t=>1-Math.pow(1-t,3);
  function frame(now){
-   const p=Math.min(1,(now-start)/duration),h=half*ease(p);
-   top.style.height=h+'px'; top.style.top=(mid-h)+'px';
-   bottom.style.height=h+'px'; bottom.style.top=mid+'px';
+   const p=Math.min(1,(now-start)/duration),e=ease(p);
+   const th=topH*e,bh=bottomVisibleH*e;
+   top.wrap.style.height=th+'px';
+   top.wrap.style.top=(boundary-th)+'px';
+   bottom.wrap.style.height=bh+'px';
+   bottom.wrap.style.top=boundary+'px';
    if(p<1){requestAnimationFrame(frame);return}
    panel.style.visibility='visible';panel.style.opacity='1';
    requestAnimationFrame(()=>{splitReveal.classList.remove('active');splitReveal.innerHTML='';});
