@@ -179,14 +179,14 @@ function activatePage(route,{animate=true}={}){
   clearReveal();
   body.classList.remove('opening','opened','transitioning');
   opening=false;
+  if(page2){page2.setAttribute('aria-hidden','true');page2.style.display='none';}
   if(page1){page1.setAttribute('aria-hidden','false');page1.style.display='block';}
-  if(page2){page2.setAttribute('aria-hidden','true');}
   return;
  }
  if(opening||body.classList.contains('opened'))return;
  opening=true;
- if(page1)page1.setAttribute('aria-hidden','true');
- if(page2)page2.setAttribute('aria-hidden','false');
+ if(page1){page1.setAttribute('aria-hidden','true');page1.style.display='block';}
+ if(page2){page2.style.display='block';page2.setAttribute('aria-hidden','false');}
  body.classList.add('transitioning','opening');
  if(p2)p2.play().catch(()=>{});
  const finish=()=>{
