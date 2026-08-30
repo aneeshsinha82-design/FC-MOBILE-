@@ -110,7 +110,7 @@ function playTableReveal(){
    const wrap=document.createElement('div');wrap.className='split-half '+kind;
    wrap.style.left=rect.left+'px';wrap.style.width=rect.width+'px';wrap.style.height=half+'px';
    wrap.style.top=(kind==='top'?rect.top:rect.top+half)+'px';
-   const ghost=panel.cloneNode(true);ghost.classList.add('standings-ghost');ghost.style.width=rect.width+'px';ghost.style.height=rect.height+'px';
+   const ghost=panel.cloneNode(true);ghost.classList.add('standings-ghost');ghost.classList.remove('table-ready');ghost.style.width=rect.width+'px';ghost.style.height=rect.height+'px';ghost.style.visibility='visible';ghost.style.opacity='1';
    ghost.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));
    ghost.style.left='0';ghost.style.top=(kind==='top'?'0':-half)+'px';
    wrap.appendChild(ghost);splitReveal.appendChild(wrap);
@@ -118,7 +118,7 @@ function playTableReveal(){
  // Build both visible halves first, then animate them continuously from the exact middle.
  makeHalf('top');makeHalf('bottom');
  splitReveal.classList.add('active');
- setTimeout(()=>{splitReveal.classList.remove('active');splitReveal.innerHTML='';panel.style.visibility='visible';panel.style.opacity='1';panel.classList.add('table-ready')},2100);
+ setTimeout(()=>{panel.style.visibility='visible';panel.style.opacity='1';panel.classList.add('table-ready');requestAnimationFrame(()=>{splitReveal.classList.remove('active');splitReveal.innerHTML=''})},2100);
 }
 function openStandings(push=true){
  if(isOpen)return;
