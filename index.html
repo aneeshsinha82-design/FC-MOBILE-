@@ -164,50 +164,19 @@ function revealTable(){
  });
 }
 
-/* Keep Page 1 and Page 2 as real browser-history states.
-   This makes the phone's native Back button return from standings to Home. */
-if(!history.state||history.state.fcMobilePage!=='home'){
- history.replaceState({fcMobilePage:'home'},'',location.href);
-}
+/* Page routing: Home = no hash, Standings = #standings.
+   The native phone/browser Back button changes the route back to Home. */
+function isStandingsRoute(){return location.hash==='#standings';}
+
 function open(){
  if(opening||body.classList.contains('opened'))return;
- /* Add a history entry immediately so Android/iPhone Back returns here first. */
- if(!history.state||history.state.fcMobilePage!=='standings'){
-  history.pushState({fcMobilePage:'standings'},'',location.href);
+ if(!isStandingsRoute()){
+  location.hash='standings'; /* creates a real browser history entry */
+  return; /* hashchange below performs the opening */
  }
- opening=true;
- body.classList.add('transitioning'); /* Page 2 exists behind doors immediately */
- body.classList.add('opening');
- if(p2)p2.play().catch(()=>{});
- setTimeout(()=>{
-  body.classList.add('opened');
-  opening=false;
-  requestAnimationFrame(()=>setTimeout(revealTable,350));
- },2350);
+ openFromHistory();
 }
-function close(){
- opening=false;clearReveal();
- body.classList.remove('opened','opening','transitioning');
- panel.classList.remove('table-ready');
- panel.style.visibility='hidden';panel.style.opacity='0';
- if(source)source.play().catch(()=>{});
-}
-enter&&enter.addEventListener('click',open);
 
-/* On-screen HOME and the phone/browser Back button now behave consistently. */
-home&&home.addEventListener('click',()=>{
- if(body.classList.contains('opened')&&history.state&&history.state.fcMobilePage==='standings'){
-  history.back();
- }else close();
-});
-window.addEventListener('popstate',event=>{
- if(event.state&&event.state.fcMobilePage==='standings'){
-  /* Supports Forward after returning to Home. */
-  if(!body.classList.contains('opened'))openFromHistory();
- }else{
-  close();
- }
-});
 function openFromHistory(){
  if(opening||body.classList.contains('opened'))return;
  opening=true;
@@ -219,5 +188,29 @@ function openFromHistory(){
   requestAnimationFrame(()=>setTimeout(revealTable,350));
  },2350);
 }
+
+function closeToHome(){
+ if(isStandingsRoute()){
+  history.back(); /* native route back to Page 1 */
+ }else{
+  close();
+ }
+}
+
+function syncRoute(){
+ if(isStandingsRoute()){
+  openFromHistory();
+ }else{
+  close();
+ }
+}
+
+enter&&enter.addEventListener('click',open);
+home&&home.addEventListener('click',closeToHome);
+window.addEventListener('hashchange',syncRoute);
+window.addEventListener('popstate',syncRoute);
+
+/* If the page is opened/refreshed on either route, show the correct page. */
+if(isStandingsRoute())openFromHistory();
 })();
 </script></body></html>
