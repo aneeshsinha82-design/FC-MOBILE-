@@ -58,68 +58,45 @@ function form(t){let a=[];for(let i=0;i<(t.w||0)&&a.length<5;i++)a.push('W');for
 fetch('data.json?v=8').then(r=>r.json()).then(a=>{a.sort((x,y)=>y.pts-x.pts||y.gd-x.gd||y.gf-x.gf||x.team.localeCompare(y.team));standingsBody.innerHTML=a.map((t,i)=>'<tr><td>'+(i+1)+'</td><td class="club"><span class="club-mark">'+t.team.slice(0,2)+'</span>'+t.team+'</td><td>'+t.p+'</td><td>'+t.w+'</td><td>'+t.d+'</td><td>'+t.l+'</td><td>'+t.gf+'</td><td>'+t.ga+'</td><td>'+t.gd+'</td><td class="points">'+t.pts+'</td><td>'+form(t)+'</td></tr>').join('')tableDataReady=true;}).catch(()=>{tableDataReady=true});
 function playTableReveal(){
  if(!tableDataReady){setTimeout(playTableReveal,80);return}
- panel.style.visibility='hidden';panel.style.opacity='0';
- splitReveal.innerHTML='';
- const table=panel.querySelector('table');
- const header=table.querySelector('thead');
- const rows=[...table.querySelectorAll('tbody tr')];
- const n=rows.length;
- const split=Math.ceil(n/2); // dynamic: middle split, e.g. 8 teams = 4 up / 4 down
+ const rows=[...standingsBody.querySelectorAll('tr')];
+ if(!rows.length){panel.style.visibility='visible';panel.style.opacity='1';return}
+ const split=Math.ceil(rows.length/2);
+ panel.style.visibility='hidden';panel.style.opacity='0';splitReveal.innerHTML='';
  const rect=panel.getBoundingClientRect();
+ const boundary=rect.top + rect.height/2;
 
- function makeGroup(kind, groupRows, isTop){
+ function build(kind, groupRows){
    const wrap=document.createElement('div');
    wrap.className='split-half '+kind;
-   wrap.style.left=rect.left+'px';
-   wrap.style.width=rect.width+'px';
-   wrap.style.height='0px';
-
-   const snap=panel.cloneNode(false);
-   snap.className='standings-panel standings-ghost';
-   snap.style.position='absolute';
-   snap.style.left='0';snap.style.top='0';
-   snap.style.width=rect.width+'px';
-   snap.style.height='auto';
-   snap.style.margin='0';
-   snap.style.visibility='visible';snap.style.opacity='1';
-
-   if(isTop) snap.appendChild(header.cloneNode(true));
-   const tw=document.createElement('div');tw.className='table-wrap';
-   const nt=document.createElement('table');
-   if(!isTop) nt.appendChild(header.cloneNode(true));
-   const tb=document.createElement('tbody');
-   groupRows.forEach(r=>tb.appendChild(r.cloneNode(true)));
-   nt.appendChild(tb);tw.appendChild(nt);snap.appendChild(tw);
-   wrap.appendChild(snap);splitReveal.appendChild(wrap);
-   return {wrap,snap};
+   wrap.style.left=rect.left+'px';wrap.style.width=rect.width+'px';
+   wrap.style.top=boundary+'px';wrap.style.height='0px';
+   const card=document.createElement('section');
+   card.className='standings-panel';
+   card.style.cssText='position:absolute;left:0;top:0;width:100%;height:auto;margin:0;visibility:visible;opacity:1;';
+   const tableWrap=document.createElement('div');tableWrap.className='table-wrap';
+   const table=document.createElement('table');
+   if(kind==='top'){
+     table.appendChild(panel.querySelector('thead').cloneNode(true));
+   }
+   const body=document.createElement('tbody');
+   groupRows.forEach(r=>body.appendChild(r.cloneNode(true)));
+   table.appendChild(body);tableWrap.appendChild(table);
+   card.appendChild(tableWrap);wrap.appendChild(card);splitReveal.appendChild(wrap);
+   return {wrap,card};
  }
-
- const topRows=rows.slice(0,split);
- const bottomRows=rows.slice(split);
- const top=makeGroup('top',topRows,true);
- const bottom=makeGroup('bottom',bottomRows,false);
-
- // Measure the actual row-based snapshots, then start exactly at the boundary.
- const topH=top.snap.getBoundingClientRect().height;
- const bottomH=bottom.snap.getBoundingClientRect().height;
- const headerH=header.getBoundingClientRect().height;
- // bottom snapshot includes its header only for alignment; hide duplicate header region by offsetting it.
- bottom.snap.style.top=(-headerH)+'px';
- const bottomVisibleH=Math.max(0,bottomH-headerH);
- const boundary=rect.top+topH;
-
- top.wrap.style.top=boundary+'px';
- bottom.wrap.style.top=boundary+'px';
+ const top=build('top',rows.slice(0,split));
+ const bottom=build('bottom',rows.slice(split));
  splitReveal.classList.add('active');
 
+ // Keep the real current order. Groups are measured separately, never pixel-cut through rows.
+ const topH=top.card.getBoundingClientRect().height;
+ const bottomH=bottom.card.getBoundingClientRect().height;
  const start=performance.now(),duration=2800,ease=t=>1-Math.pow(1-t,3);
  function frame(now){
    const p=Math.min(1,(now-start)/duration),e=ease(p);
-   const th=topH*e,bh=bottomVisibleH*e;
-   top.wrap.style.height=th+'px';
-   top.wrap.style.top=(boundary-th)+'px';
-   bottom.wrap.style.height=bh+'px';
-   bottom.wrap.style.top=boundary+'px';
+   const th=topH*e,bh=bottomH*e;
+   top.wrap.style.height=th+'px';top.wrap.style.top=(boundary-th)+'px';
+   bottom.wrap.style.height=bh+'px';bottom.wrap.style.top=boundary+'px';
    if(p<1){requestAnimationFrame(frame);return}
    panel.style.visibility='visible';panel.style.opacity='1';
    requestAnimationFrame(()=>{splitReveal.classList.remove('active');splitReveal.innerHTML='';});
