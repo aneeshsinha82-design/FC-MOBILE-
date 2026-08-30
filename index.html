@@ -80,16 +80,9 @@ function setupDoors(){
 setupDoors();
 
 function lastFive(t){
- const played=[];
- // Use stored match history when available; otherwise derive the latest available W/D/L totals.
- if(Array.isArray(t.last5)) played.push(...t.last5);
- else {
-   for(let i=0;i<Number(t.w||0)&&played.length<5;i++)played.push('W');
-   for(let i=0;i<Number(t.d||0)&&played.length<5;i++)played.push('D');
-   for(let i=0;i<Number(t.l||0)&&played.length<5;i++)played.push('L');
- }
- while(played.length<5)played.push('N');
- return played.slice(0,5).map(x=>{
+ const a=Array.isArray(t.last5)?t.last5.slice(0,5):[];
+ while(a.length<5)a.push('N');
+ return a.map(x=>{
    if(x==='W')return '<span class="form-dot win" title="Win">W</span>';
    if(x==='L')return '<span class="form-dot loss" title="Loss">L</span>';
    if(x==='D')return '<span class="form-dot draw" title="Draw">D</span>';
