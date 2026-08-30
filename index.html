@@ -22,7 +22,7 @@ body.opened .p2-content{opacity:1;visibility:visible;pointer-events:auto}
 .panel-title{padding:20px 22px;border-bottom:1px solid rgba(255,255,255,.18);display:flex;justify-content:space-between;align-items:end;background:rgba(255,255,255,.045)}.panel-title h2{margin:0;color:#fff;letter-spacing:.12em;font-size:clamp(19px,3vw,30px);text-shadow:0 1px 12px rgba(0,0,0,.45)}
 .season{font-size:11px;color:#9aa9a1}.season strong{display:block;color:#fff;font-size:14px;margin-top:4px}
 .table-wrap{overflow:auto}table{width:100%;min-width:680px;border-collapse:collapse}th,td{padding:12px 9px;text-align:center;border-bottom:1px solid rgba(255,255,255,.12);font-size:13px}th{font-size:10px;letter-spacing:.08em;color:rgba(255,255,255,.68)}tbody tr{cursor:pointer;transition:background .22s ease,transform .22s ease}tbody tr:hover,tbody tr:active{background:rgba(255,255,255,.10);transform:scale(1.008)}.club{text-align:left;font-weight:700}.club-mark{display:inline-flex;width:26px;height:26px;border-radius:50%;align-items:center;justify-content:center;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.32);font-size:9px;margin-right:8px}.points{color:#b8ffd0;font-weight:900}
-.form-dot{display:inline-flex;width:21px;height:21px;border:1.5px solid rgba(255,255,255,.35);border-radius:50%;align-items:center;justify-content:center;margin:0 2px;font-size:12px;font-weight:900;line-height:1;vertical-align:middle}.win{border-color:#25e965;color:#25e965;background:rgba(37,233,101,.13)}.loss{border-color:#ff5d5d;color:#ff5d5d;background:rgba(255,93,93,.10)}.draw{border-color:#ffd45a;color:#ffd45a;background:rgba(255,212,90,.10)}.not-played{border-color:rgba(255,255,255,.32);color:rgba(255,255,255,.55);background:rgba(255,255,255,.05)}
+.form-dot{display:inline-flex;width:22px;height:22px;border:0;border-radius:4px;align-items:center;justify-content:center;margin:0 2px;font-size:11px;font-weight:900;line-height:1;vertical-align:middle;color:#fff;font-family:Arial,Helvetica,sans-serif;box-shadow:0 1px 2px rgba(0,0,0,.22)}.win{background:#149957}.loss{background:#d93645}.draw{background:#d99a16}.not-played{background:#7d858b;color:#eef1f3}
 .home-btn{position:fixed;z-index:20;top:18px;left:18px;border:1px solid rgba(255,255,255,.28);background:rgba(0,0,0,.55);color:#fff;padding:10px 14px;border-radius:999px;cursor:pointer;display:none}body.opened .home-btn{display:block}
 .door-stage{position:fixed;inset:0;z-index:10;background:transparent;perspective:1800px;overflow:hidden}
 #sourceVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.8);z-index:1;background:transparent}
@@ -90,9 +90,9 @@ function lastFive(t){
  }
  while(played.length<5)played.push('N');
  return played.slice(0,5).map(x=>{
-   if(x==='W')return '<span class="form-dot win" title="Win">✓</span>';
-   if(x==='L')return '<span class="form-dot loss" title="Loss">×</span>';
-   if(x==='D')return '<span class="form-dot draw" title="Draw">−</span>';
+   if(x==='W')return '<span class="form-dot win" title="Win">W</span>';
+   if(x==='L')return '<span class="form-dot loss" title="Loss">L</span>';
+   if(x==='D')return '<span class="form-dot draw" title="Draw">D</span>';
    return '<span class="form-dot not-played" title="Not played">–</span>';
  }).join('');
 }
