@@ -35,8 +35,8 @@ body.opened .split-bottom{animation:splitBottom 1.25s cubic-bezier(.16,.84,.22,1
 .home-btn{position:fixed;z-index:20;top:18px;left:18px;border:1px solid rgba(255,255,255,.28);background:rgba(0,0,0,.55);color:#fff;padding:10px 14px;border-radius:999px;cursor:pointer;display:none}body.opened .home-btn{display:block}
 
 /* PAGE 1 */
-.door-stage{position:fixed;inset:0;z-index:10;background:#000;perspective:1800px;overflow:hidden}
-#sourceVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.8);z-index:1}
+.door-stage{position:fixed;inset:0;z-index:10;background:transparent;perspective:1800px;overflow:hidden}
+#sourceVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.8);z-index:1;background:transparent}
 /* Canvases are TWO VISUAL DOOR HALVES copied from ONE playing video */
 .door{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;transform-style:preserve-3d;will-change:transform;transition:transform 2.35s cubic-bezier(.18,.72,.18,1),filter 2.35s ease}
 #leftDoor{transform-origin:left center;clip-path:polygon(0 0,50% 0,49% 7%,48% 14%,48.5% 21%,51% 29%,53% 38%,53.5% 47%,52% 55%,49% 64%,47.5% 72%,49% 80%,52% 88%,53% 94%,52% 100%,0 100%)}
@@ -57,7 +57,7 @@ body.opening .landing-ui{opacity:0;pointer-events:none}
 body.opening #leftDoor{transform:translateX(-14vw) translateZ(-12px) rotateY(72deg);filter:brightness(.72)}
 body.opening #rightDoor{transform:translateX(14vw) translateZ(-12px) rotateY(-72deg);filter:brightness(.72)}
 body.opening #leftCurve{opacity:0;transition:opacity .25s}
-body.opened .door-stage{pointer-events:none;opacity:0;transition:opacity .65s ease .4s}
+body.opened .door-stage{pointer-events:none;opacity:0;transition:opacity .45s ease}
 body.opened #leftDoor{transform:translateX(-105vw) rotateY(86deg);transition:transform .7s ease .02s}
 body.opened #rightDoor{transform:translateX(105vw) rotateY(-86deg);transition:transform .7s ease .02s}
 @media(max-width:650px){.status,.footer-right{display:none}.cta{padding:15px 25px}.panel-title{padding:17px}}
@@ -65,7 +65,7 @@ body.opened #rightDoor{transform:translateX(105vw) rotateY(-86deg);transition:tr
 </head>
 <body>
 <section class="page2"><div class="p2-world">
- <video class="p2-video" autoplay muted loop playsinline><source src="fc_mobile_background_hd_under25mb.mp4" type="video/mp4"></video>
+ <video class="p2-video" autoplay muted loop playsinline preload="auto"><source src="fc_mobile_background_hd_under25mb.mp4" type="video/mp4"></video>
  <button class="home-btn" id="homeBtn">← HOME</button>
  <div class="p2-content"><section class="standings-panel"><div class="panel-title"><h2>LEAGUE STANDINGS</h2><div class="season">Season<strong>2026–27</strong></div></div><div class="table-wrap"><table><thead><tr><th>#</th><th>CLUB</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>PTS</th><th>LAST 5</th></tr></thead><tbody id="standingsBody"></tbody></table></div></section></div>
 </div></section><div class="split-reveal" id="splitReveal"></div>
