@@ -7,154 +7,57 @@
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020504;font-family:Arial,Helvetica,sans-serif;color:#fff}
 :root{--green:#25e965}
-/* PAGE 2: COMPLETELY COVERED UNTIL THE DOORS OPEN */
 .page2{position:fixed;inset:0;z-index:1;background:linear-gradient(135deg,#1b3027,#0b1712 55%,#07100c);overflow:hidden;perspective:1800px;display:none}
 body.transitioning .page2,body.opened .page2{display:block}
-.p2-content{opacity:0;visibility:hidden;pointer-events:none}
-body.opened .p2-content{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .35s ease .15s}
 .p2-world{position:absolute;inset:-8vh -8vw;transform:scale(.82) translateY(2vh);transform-origin:center;transition:transform 2.4s cubic-bezier(.18,.8,.18,1);will-change:transform}
 body.opened .p2-world{transform:scale(1.035) translateY(-.8vh)}
 .p2-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.72) saturate(1.08);transform:scale(1.06);opacity:1}
-.p2-content{position:relative;z-index:2;min-height:100%;display:flex;align-items:center;justify-content:center;padding:78px 18px 35px}
+.p2-content{position:relative;z-index:2;min-height:100%;display:flex;align-items:center;justify-content:center;padding:78px 18px 35px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s ease .15s}
+body.opened .p2-content{opacity:1;visibility:visible;pointer-events:auto}
 .standings-panel{position:relative;width:min(94vw,980px);background:rgba(235,240,245,.10);border:1px solid rgba(255,255,255,.38);border-radius:18px;overflow:hidden;box-shadow:0 25px 90px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.18);backdrop-filter:blur(20px) saturate(125%);-webkit-backdrop-filter:blur(20px) saturate(125%);opacity:0;visibility:hidden}
 .standings-panel.table-ready{opacity:1;visibility:visible}
 .split-reveal{position:fixed;inset:0;z-index:30;pointer-events:none;display:none;background:transparent}.split-reveal.active{display:block}
 .split-half{position:absolute;overflow:hidden;will-change:height,top;opacity:1;filter:drop-shadow(0 14px 28px rgba(0,0,0,.22))}
 .split-half .standings-ghost{position:absolute;margin:0;visibility:visible!important;opacity:1!important}
-.split-half.top{animation:tableTopFromCenter 2.8s cubic-bezier(.22,.8,.2,1) forwards}
-.split-half.bottom{animation:tableBottomFromCenter 2.8s cubic-bezier(.22,.8,.2,1) forwards}
-@keyframes tableTopFromCenter{0%{height:0;opacity:1}100%{height:50%;opacity:1}}
-@keyframes tableBottomFromCenter{0%{height:0;opacity:1}100%{height:50%;opacity:1}}
 .panel-title{padding:20px 22px;border-bottom:1px solid rgba(255,255,255,.18);display:flex;justify-content:space-between;align-items:end;background:rgba(255,255,255,.045)}.panel-title h2{margin:0;color:#fff;letter-spacing:.12em;font-size:clamp(19px,3vw,30px);text-shadow:0 1px 12px rgba(0,0,0,.45)}
 .season{font-size:11px;color:#9aa9a1}.season strong{display:block;color:#fff;font-size:14px;margin-top:4px}
 .table-wrap{overflow:auto}table{width:100%;min-width:680px;border-collapse:collapse}th,td{padding:12px 9px;text-align:center;border-bottom:1px solid rgba(255,255,255,.12);font-size:13px}th{font-size:10px;letter-spacing:.08em;color:rgba(255,255,255,.68)}tbody tr{cursor:pointer;transition:background .22s ease,transform .22s ease}tbody tr:hover,tbody tr:active{background:rgba(255,255,255,.10);transform:scale(1.008)}.club{text-align:left;font-weight:700}.club-mark{display:inline-flex;width:26px;height:26px;border-radius:50%;align-items:center;justify-content:center;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.32);font-size:9px;margin-right:8px}.points{color:#b8ffd0;font-weight:900}
 .form-dot{display:inline-flex;width:17px;height:17px;border:1px solid #789;border-radius:50%;align-items:center;justify-content:center;margin:0 1px;font-size:9px}.win{border-color:#25e965;color:#25e965}.loss{border-color:#ff5d5d;color:#ff5d5d}
-.split-top,.split-bottom{position:absolute;left:0;right:0;height:50%;pointer-events:none;z-index:9;background:rgba(0,0,0,.01);opacity:0}
-.split-top{top:0;transform:translateY(0)}.split-bottom{bottom:0;transform:translateY(0)}
-body.opened .split-top{animation:splitTop 1.25s cubic-bezier(.16,.84,.22,1) .12s forwards}
-body.opened .split-bottom{animation:splitBottom 1.25s cubic-bezier(.16,.84,.22,1) .12s forwards}
-@keyframes splitTop{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-110%)}}
-@keyframes splitBottom{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(110%)}}
 .home-btn{position:fixed;z-index:20;top:18px;left:18px;border:1px solid rgba(255,255,255,.28);background:rgba(0,0,0,.55);color:#fff;padding:10px 14px;border-radius:999px;cursor:pointer;display:none}body.opened .home-btn{display:block}
-
-/* PAGE 1 */
 .door-stage{position:fixed;inset:0;z-index:10;background:transparent;perspective:1800px;overflow:hidden}
 #sourceVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.8);z-index:1;background:transparent}
-/* Canvases are TWO VISUAL DOOR HALVES copied from ONE playing video */
 .door{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;transform-style:preserve-3d;will-change:transform;transition:transform 2.35s cubic-bezier(.18,.72,.18,1),filter 2.35s ease}
 #leftDoor{transform-origin:left center;clip-path:polygon(0 0,50% 0,49% 7%,48% 14%,48.5% 21%,51% 29%,53% 38%,53.5% 47%,52% 55%,49% 64%,47.5% 72%,49% 80%,52% 88%,53% 94%,52% 100%,0 100%)}
 #rightDoor{transform-origin:right center;clip-path:polygon(50% 0,100% 0,100% 100%,52% 100%,53% 94%,52% 88%,49% 80%,47.5% 72%,49% 64%,52% 55%,53.5% 47%,53% 38%,51% 29%,48.5% 21%,48% 14%,49% 7%)}
-/* hide the source video after canvases are ready: only ONE video is playing */
 .door-stage.ready #sourceVideo{opacity:0}
 .door-glass{position:absolute;inset:0;z-index:4;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.07),transparent 22%,transparent 76%,rgba(37,233,101,.06))}
-.curve{position:absolute;inset:0;z-index:5;width:100%;height:100%;pointer-events:none;filter:drop-shadow(0 0 8px rgba(37,233,101,.9))}
-.curve path{fill:none;stroke:#8affaf;stroke-width:1.1;vector-effect:non-scaling-stroke}
-#rightCurve{display:none} /* ONE visible shared seam, not two separate gaps */
-
+.curve{position:absolute;inset:0;z-index:5;width:100%;height:100%;pointer-events:none;filter:drop-shadow(0 0 8px rgba(37,233,101,.9))}.curve path{fill:none;stroke:#8affaf;stroke-width:1.1;vector-effect:non-scaling-stroke}
+#rightCurve{display:none}
 .landing-ui{position:absolute;inset:0;z-index:8;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px 20px 40px;transition:opacity .3s ease}
 header{position:absolute;top:0;left:0;width:100%;padding:26px clamp(20px,5vw,72px);display:flex;justify-content:space-between;align-items:center}.brand{font-size:clamp(20px,2.1vw,34px);font-weight:900;font-style:italic;letter-spacing:-1px}.brand b{color:#21e85e}.tag{font-size:10px;letter-spacing:.28em;color:#a8b6ae;margin-top:4px}.status{font-size:11px;letter-spacing:.12em;border:1px solid rgba(42,237,105,.35);padding:9px 14px;border-radius:999px;background:rgba(4,20,10,.38)}
-.kicker{font-size:11px;letter-spacing:.42em;color:#58f58a;margin-bottom:15px;text-transform:uppercase}h1{margin:0;font-size:clamp(44px,9vw,130px);line-height:.88;letter-spacing:-.06em;font-style:italic;text-shadow:0 0 35px rgba(37,241,99,.18)}h1 span{color:#25e965}.hero-p{margin:20px auto 28px;max-width:560px;color:#d0d8d3;font-size:clamp(14px,1.4vw,18px);line-height:1.55}
-.cta{cursor:pointer;border:1px solid rgba(255,255,255,.38);background:linear-gradient(135deg,#72777d,#3e4349);color:#fff;padding:17px 42px;border-radius:12px;font-size:15px;font-weight:900;letter-spacing:.15em}.hint{margin-top:17px;font-size:10px;letter-spacing:.2em;color:#94a39a;text-transform:uppercase}footer{position:absolute;bottom:20px;left:0;width:100%;padding:0 clamp(20px,5vw,72px);display:flex;justify-content:space-between;color:#78857d;font-size:10px;letter-spacing:.12em}
-
+.kicker{font-size:11px;letter-spacing:.42em;color:#58f58a;margin-bottom:15px;text-transform:uppercase}h1{margin:0;font-size:clamp(44px,9vw,130px);line-height:.88;letter-spacing:-.06em;font-style:italic;text-shadow:0 0 35px rgba(37,241,99,.18)}h1 span{color:#25e965}.hero-p{margin:20px auto 28px;max-width:560px;color:#d0d8d3;font-size:clamp(14px,1.4vw,18px);line-height:1.55}.cta{cursor:pointer;border:1px solid rgba(255,255,255,.38);background:linear-gradient(135deg,#72777d,#3e4349);color:#fff;padding:17px 42px;border-radius:12px;font-size:15px;font-weight:900;letter-spacing:.15em}.hint{margin-top:17px;font-size:10px;letter-spacing:.2em;color:#94a39a;text-transform:uppercase}footer{position:absolute;bottom:20px;left:0;width:100%;padding:0 clamp(20px,5vw,72px);display:flex;justify-content:space-between;color:#78857d;font-size:10px;letter-spacing:.12em}
 body.opening .landing-ui{opacity:0;pointer-events:none}
-body.opening #leftDoor{transform:translateX(-14vw) translateZ(-12px) rotateY(72deg);filter:brightness(.72)}
-body.opening #rightDoor{transform:translateX(14vw) translateZ(-12px) rotateY(-72deg);filter:brightness(.72)}
+body.opening #leftDoor{transform:translateX(-14vw) translateZ(-12px) rotateY(72deg);filter:brightness(.72)}body.opening #rightDoor{transform:translateX(14vw) translateZ(-12px) rotateY(-72deg);filter:brightness(.72)}
 body.opening #leftCurve{opacity:0;transition:opacity .25s}
 body.opened .door-stage{pointer-events:none;opacity:0;transition:opacity .18s ease}
-body.opened #leftDoor{transform:translateX(-105vw) rotateY(86deg);transition:transform .7s ease .02s}
-body.opened #rightDoor{transform:translateX(105vw) rotateY(-86deg);transition:transform .7s ease .02s}
+body.opened #leftDoor{transform:translateX(-105vw) rotateY(86deg);transition:transform .7s ease .02s}body.opened #rightDoor{transform:translateX(105vw) rotateY(-86deg);transition:transform .7s ease .02s}
 @media(max-width:650px){.status,.footer-right{display:none}.cta{padding:15px 25px}.panel-title{padding:17px}}
 </style>
 </head>
 <body>
-<section class="page2"><div class="p2-world">
- <video class="p2-video" autoplay muted loop playsinline preload="auto"><source src="fc_mobile_background_hd_under25mb.mp4" type="video/mp4"></video>
- <button class="home-btn" id="homeBtn">← HOME</button>
- <div class="p2-content"><section class="standings-panel"><div class="panel-title"><h2>LEAGUE STANDINGS</h2><div class="season">Season<strong>2026–27</strong></div></div><div class="table-wrap"><table><thead><tr><th>#</th><th>CLUB</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>PTS</th><th>LAST 5</th></tr></thead><tbody id="standingsBody"></tbody></table></div></section></div>
-</div></section><div class="split-reveal" id="splitReveal"></div>
-
-<section class="door-stage" id="doorStage">
- <!-- ONE VIDEO ELEMENT ONLY. Its frames are copied into the two moving door canvases. -->
- <video id="sourceVideo" autoplay muted loop playsinline><source src="video_2026-08-29_18-55-29.mp4?v=4" type="video/mp4"></video>
- <canvas id="leftDoor" class="door"></canvas>
- <canvas id="rightDoor" class="door"></canvas>
- <div class="door-glass"></div>
- <svg id="leftCurve" class="curve" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M50 0 C48 8 47.5 14 48.5 21 C51 29 53 38 53.5 47 C53.5 55 49 64 47.5 72 C47 80 50 84 52 88 C53 93 53 97 52 100"/></svg>
- <div class="landing-ui">
-   <header><div><div class="brand"><b>FC</b> MOBILE</div><div class="tag">FAN STANDINGS HUB</div></div><div class="status">● LIVE SEASON 2026–27</div></header>
-   <div class="kicker">Enter the arena</div><h1>THE <span>GAME</span><br>STARTS HERE.</h1>
-   <p class="hero-p">Explore the latest FC Mobile season standings and follow the competition.</p>
-   <button class="cta" id="enter">VIEW STANDINGS →</button><div class="hint">Enter the standings hub</div>
-   <footer><div>© 2026 FC MOBILE FAN PROJECT</div><div class="footer-right">WATCH • EXPLORE • COMPETE</div></footer>
- </div>
-</section>
+<section class="page2"><div class="p2-world"><video class="p2-video" autoplay muted loop playsinline preload="auto"><source src="fc_mobile_background_hd_under25mb.mp4" type="video/mp4"></video><button class="home-btn" id="homeBtn">← HOME</button><div class="p2-content"><section class="standings-panel"><div class="panel-title"><h2>LEAGUE STANDINGS</h2><div class="season">Season<strong>2026–27</strong></div></div><div class="table-wrap"><table><thead><tr><th>#</th><th>CLUB</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>PTS</th><th>LAST 5</th></tr></thead><tbody id="standingsBody"></tbody></table></div></section></div></div></section><div class="split-reveal" id="splitReveal"></div>
+<section class="door-stage" id="doorStage"><video id="sourceVideo" autoplay muted loop playsinline><source src="video_2026-08-29_18-55-29.mp4?v=4" type="video/mp4"></video><canvas id="leftDoor" class="door"></canvas><canvas id="rightDoor" class="door"></canvas><div class="door-glass"></div><svg id="leftCurve" class="curve" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M50 0 C48 8 47.5 14 48.5 21 C51 29 53 38 53.5 47 C53.5 55 49 64 47.5 72 C47 80 50 84 52 88 C53 93 53 97 52 100"/></svg><div class="landing-ui"><header><div><div class="brand"><b>FC</b> MOBILE</div><div class="tag">FAN STANDINGS HUB</div></div><div class="status">● LIVE SEASON 2026–27</div></header><div class="kicker">Enter the arena</div><h1>THE <span>GAME</span><br>STARTS HERE.</h1><p class="hero-p">Explore the latest FC Mobile season standings and follow the competition.</p><button class="cta" id="enter">VIEW STANDINGS →</button><div class="hint">Enter the standings hub</div><footer><div>© 2026 FC MOBILE FAN PROJECT</div><div class="footer-right">WATCH • EXPLORE • COMPETE</div></footer></div></section>
 <script>
-document.body.classList.remove('page-loaded');
-const video=document.getElementById('sourceVideo'),p2Video=document.querySelector('.p2-video'),stage=document.getElementById('doorStage'),left=document.getElementById('leftDoor'),right=document.getElementById('rightDoor');
-p2Video.load(); p2Video.play().catch(()=>{});
-// Page 2 remains completely unpainted until navigation starts.
+const video=document.getElementById('sourceVideo'),p2Video=document.querySelector('.p2-video'),stage=document.getElementById('doorStage'),left=document.getElementById('leftDoor'),right=document.getElementById('rightDoor'),panel=document.querySelector('.standings-panel'),splitReveal=document.getElementById('splitReveal');
 const ctxL=left.getContext('2d'),ctxR=right.getContext('2d');let drawing=false,isOpen=false;
-function size(){const dpr=Math.min(window.devicePixelRatio||1,2);[left,right].forEach(c=>{c.width=Math.round(innerWidth*dpr);c.height=Math.round(innerHeight*dpr);c.style.width=innerWidth+'px';c.style.height=innerHeight+'px'});ctxL.setTransform(dpr,0,0,dpr,0,0);ctxR.setTransform(dpr,0,0,dpr,0,0)}
+p2Video.load();p2Video.play().catch(()=>{});
+function size(){const dpr=Math.min(devicePixelRatio||1,2);[left,right].forEach(c=>{c.width=Math.round(innerWidth*dpr);c.height=Math.round(innerHeight*dpr);c.style.width=innerWidth+'px';c.style.height=innerHeight+'px'});ctxL.setTransform(dpr,0,0,dpr,0,0);ctxR.setTransform(dpr,0,0,dpr,0,0)}
 function draw(){if(video.readyState>=2){ctxL.clearRect(0,0,innerWidth,innerHeight);ctxR.clearRect(0,0,innerWidth,innerHeight);ctxL.drawImage(video,0,0,innerWidth,innerHeight);ctxR.drawImage(video,0,0,innerWidth,innerHeight);stage.classList.add('ready')}if(drawing)requestAnimationFrame(draw)}
 video.addEventListener('loadeddata',()=>{size();drawing=true;draw()});window.addEventListener('resize',size);
 function form(t){let a=[];for(let i=0;i<(t.w||0)&&a.length<5;i++)a.push('W');for(let i=0;i<(t.d||0)&&a.length<5;i++)a.push('D');for(let i=0;i<(t.l||0)&&a.length<5;i++)a.push('L');while(a.length<5)a.push('');return a.map(x=>'<span class="form-dot '+(x==='W'?'win':x==='L'?'loss':'')+'">'+(x==='W'?'✓':x==='L'?'×':x==='D'?'−':'')+'</span>').join('')}
-fetch('data.json?v=8').then(r=>r.json()).then(a=>{a.sort((x,y)=>y.pts-x.pts||y.gd-x.gd||y.gf-x.gf||x.team.localeCompare(y.team));standingsBody.innerHTML=a.map((t,i)=>'<tr><td>'+(i+1)+'</td><td class="club"><span class="club-mark">'+t.team.slice(0,2)+'</span>'+t.team+'</td><td>'+t.p+'</td><td>'+t.w+'</td><td>'+t.d+'</td><td>'+t.l+'</td><td>'+t.gf+'</td><td>'+t.ga+'</td><td>'+t.gd+'</td><td class="points">'+t.pts+'</td><td>'+form(t)+'</td></tr>').join('')});
-const panel=document.querySelector('.standings-panel'),splitReveal=document.getElementById('splitReveal');
-function playTableReveal(){
- panel.classList.remove('table-ready');
- panel.style.visibility='hidden';panel.style.opacity='0';
- splitReveal.classList.remove('active');splitReveal.innerHTML='';
- const rect=panel.getBoundingClientRect(),half=rect.height/2,mid=rect.top+half,duration=2800;
- const makeHalf=(kind)=>{
-   const wrap=document.createElement('div');wrap.className='split-half '+kind;
-   wrap.style.left=rect.left+'px';wrap.style.width=rect.width+'px';
-   wrap.style.top=mid+'px';wrap.style.height='0px';
-   const ghost=panel.cloneNode(true);ghost.classList.add('standings-ghost');
-   ghost.style.width=rect.width+'px';ghost.style.height=rect.height+'px';ghost.style.left='0';
-   ghost.style.top=-half+'px';ghost.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));
-   wrap.appendChild(ghost);splitReveal.appendChild(wrap);
-   return wrap;
- };
- const top=makeHalf('top'),bottom=makeHalf('bottom');
- splitReveal.classList.add('active');
- const ease=t=>1-Math.pow(1-t,3);
- const start=performance.now();
- function frame(now){
-   const p=Math.min(1,(now-start)/duration),e=ease(p),h=half*e;
-   top.style.height=h+'px';top.style.top=(mid-h)+'px';
-   bottom.style.height=h+'px';bottom.style.top=mid+'px';
-   if(p<1){requestAnimationFrame(frame);return;}
-   panel.style.visibility='visible';panel.style.opacity='1';panel.classList.add('table-ready');
-   requestAnimationFrame(()=>{splitReveal.classList.remove('active');splitReveal.innerHTML='';});
- }
- requestAnimationFrame(frame);
-}
-function openStandings(push=true){
- if(isOpen)return;
- isOpen=true;
- if(push) history.pushState({fcPage:'standings'},'', '#standings');
- document.body.classList.add('transitioning','opening');
- setTimeout(()=>{document.body.classList.add('opened');drawing=false;setTimeout(playTableReveal,1450)},2350);
-}
-function goHome(){
- isOpen=false;
- drawing=false;
- stage.style.transition='none';
- stage.style.opacity='1';
- stage.style.pointerEvents='auto';
- document.body.classList.remove('opened','opening','transitioning','table-ready');panel.style.visibility='visible';panel.style.opacity='0';splitReveal.style.background='';splitReveal.classList.remove('active');splitReveal.innerHTML='';
- left.style.transition='none';right.style.transition='none';
- left.style.transform='';right.style.transform='';
- void stage.offsetWidth;
- stage.style.transition='';left.style.transition='';right.style.transition='';
- drawing=true;draw();
- setTimeout(()=>{stage.style.opacity='';stage.style.pointerEvents=''},30);
-}
-document.getElementById('enter').onclick=()=>openStandings(true);
-document.getElementById('homeBtn').onclick=()=>{
- if(location.hash==='#standings') history.back(); else goHome();
-};
-window.addEventListener('popstate',()=>goHome());
-if(location.hash==='#standings'){history.replaceState(null,'',location.pathname+location.search);}
-</script>
-</body></html>
+fetch('data.json?v=8').then(r=>r.json()).then(a=>{a.sort((x,y)=>y.pts-x.pts||y.gd-x.gd||y.gf-x.gf||x.team.localeCompare(y.team));standingsBody.innerHTML=a.map((t,i)=>'<tr><td>'+(i+1)+'</td><td class="club"><span class="club-mark">'+t.team.slice(0,2)+'</span>'+t.team+'</td><td>'+t.p+'</td><td>'+t.w+'</td><td>'+t.d+'</td><td>'+t.l+'</td><td>'+t.gf+'</td><td>'+t.ga+'</td><td>'+t.gd+'</td><td class="points">'+t.pts+'</td><td>'+form(t)+'</td></tr>').join('')}).catch(()=>{});
+function playTableReveal(){panel.style.visibility='hidden';panel.style.opacity='0';splitReveal.innerHTML='';const rect=panel.getBoundingClientRect(),half=rect.height/2,mid=rect.top+half;function makeHalf(kind){const wrap=document.createElement('div');wrap.className='split-half '+kind;wrap.style.left=rect.left+'px';wrap.style.width=rect.width+'px';wrap.style.top=mid+'px';wrap.style.height='0px';const ghost=panel.cloneNode(true);ghost.classList.add('standings-ghost');ghost.style.width=rect.width+'px';ghost.style.height=rect.height+'px';ghost.style.left='0';ghost.style.top=-half+'px';ghost.style.visibility='visible';ghost.style.opacity='1';ghost.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));wrap.appendChild(ghost);splitReveal.appendChild(wrap);return wrap}const top=makeHalf('top'),bottom=makeHalf('bottom');splitReveal.classList.add('active');const ease=t=>1-Math.pow(1-t,3),start=performance.now();function frame(now){const p=Math.min(1,(now-start)/2800),e=ease(p),h=half*e;top.style.height=h+'px';top.style.top=(mid-h)+'px';bottom.style.height=h+'px';bottom.style.top=mid+'px';if(p<1){requestAnimationFrame(frame);return}panel.style.visibility='visible';panel.style.opacity='1';panel.classList.add('table-ready');requestAnimationFrame(()=>{splitReveal.classList.remove('active');splitReveal.innerHTML=''})}requestAnimationFrame(frame)}
+function openStandings(push=true){if(isOpen)return;isOpen=true;if(push)history.pushState({fcPage:'standings'},'', '#standings');document.body.classList.add('transitioning','opening');setTimeout(()=>{document.body.classList.add('opened');drawing=false;setTimeout(playTableReveal,1450)},2350)}
+function goHome(){isOpen=false;drawing=false;stage.style.transition='none';stage.style.opacity='1';stage.style.pointerEvents='auto';document.body.classList.remove('opened','opening','transitioning','table-ready');panel.style.visibility='visible';panel.style.opacity='0';splitReveal.classList.remove('active');splitReveal.innerHTML='';left.style.transition='none';right.style.transition='none';left.style.transform='';right.style.transform='';void stage.offsetWidth;stage.style.transition='';left.style.transition='';right.style.transition='';drawing=true;draw();setTimeout(()=>{stage.style.opacity='';stage.style.pointerEvents=''},30)}
+document.getElementById('enter').onclick=()=>openStandings(true);document.getElementById('homeBtn').onclick=()=>{if(location.hash==='#standings')history.back();else goHome()};window.addEventListener('popstate',goHome);
+</script></body></html>
