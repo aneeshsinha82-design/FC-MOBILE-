@@ -13,9 +13,9 @@
 body.opened .p2-world{transform:scale(1.035) translateY(-.8vh)}
 .p2-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.72) saturate(1.08);transform:scale(1.06);opacity:1}
 .p2-content{position:relative;z-index:2;min-height:100%;display:flex;align-items:center;justify-content:center;padding:78px 18px 35px}
-.standings-panel{position:relative;width:min(94vw,980px);background:rgba(235,240,245,.10);border:1px solid rgba(255,255,255,.38);border-radius:18px;overflow:hidden;box-shadow:0 25px 90px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.18);backdrop-filter:blur(20px) saturate(125%);-webkit-backdrop-filter:blur(20px) saturate(125%);opacity:1;visibility:visible}
+.standings-panel{position:relative;width:min(94vw,980px);background:rgba(235,240,245,.10);border:1px solid rgba(255,255,255,.38);border-radius:18px;overflow:hidden;box-shadow:0 25px 90px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.18);backdrop-filter:blur(20px) saturate(125%);-webkit-backdrop-filter:blur(20px) saturate(125%);opacity:0;visibility:hidden}
 .standings-panel.table-ready{opacity:1;visibility:visible}
-.split-reveal{position:fixed;inset:0;z-index:8;pointer-events:none;display:none}.split-reveal.active{display:block}
+.split-reveal{position:fixed;inset:0;z-index:30;pointer-events:none;display:none;background:#000}.split-reveal.active{display:block}
 .split-half{position:absolute;overflow:hidden;will-change:clip-path,opacity;filter:drop-shadow(0 14px 28px rgba(0,0,0,.28));opacity:0}
 .split-half .standings-ghost{position:absolute;margin:0;opacity:1}
 .split-half.top{animation:tableTopFromMiddle 2.05s cubic-bezier(.18,.82,.22,1) forwards}
@@ -98,6 +98,8 @@ const panel=document.querySelector('.standings-panel'),splitReveal=document.getE
 function playTableReveal(){
  panel.classList.remove('table-ready');
  panel.style.visibility='hidden';
+ splitReveal.style.background='#000';
+ splitReveal.style.opacity='1';
  splitReveal.classList.remove('active');splitReveal.innerHTML='';
  const rect=panel.getBoundingClientRect(),half=rect.height/2;
  splitReveal.innerHTML='';
@@ -110,8 +112,10 @@ function playTableReveal(){
    ghost.style.left='0';ghost.style.top=(kind==='top'?'0':-half)+'px';
    wrap.appendChild(ghost);splitReveal.appendChild(wrap);
  };
- makeHalf('top');makeHalf('bottom');splitReveal.classList.add('active');
- setTimeout(()=>{splitReveal.classList.remove('active');splitReveal.innerHTML='';panel.style.visibility='visible';panel.classList.add('table-ready')},2080);
+ // Keep the short black cinematic pause from the earlier design.
+ splitReveal.classList.add('active');
+ setTimeout(()=>{splitReveal.style.background='transparent';makeHalf('top');makeHalf('bottom');},320);
+ setTimeout(()=>{splitReveal.classList.remove('active');splitReveal.innerHTML='';splitReveal.style.background='';panel.style.visibility='visible';panel.style.opacity='1';panel.classList.add('table-ready')},2450);
 }
 function openStandings(push=true){
  if(isOpen)return;
@@ -126,7 +130,7 @@ function goHome(){
  stage.style.transition='none';
  stage.style.opacity='1';
  stage.style.pointerEvents='auto';
- document.body.classList.remove('opened','opening','table-ready');panel.style.visibility='visible';splitReveal.classList.remove('active');splitReveal.innerHTML='';
+ document.body.classList.remove('opened','opening','table-ready');panel.style.visibility='visible';panel.style.opacity='0';splitReveal.style.background='';splitReveal.classList.remove('active');splitReveal.innerHTML='';
  left.style.transition='none';right.style.transition='none';
  left.style.transform='';right.style.transform='';
  void stage.offsetWidth;
