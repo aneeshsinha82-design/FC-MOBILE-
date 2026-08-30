@@ -11,8 +11,8 @@
 .page2{position:fixed;inset:0;z-index:1;background:#030806;overflow:auto}
 .p2-video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.48)}
 .p2-content{position:relative;z-index:2;min-height:100%;display:flex;align-items:center;justify-content:center;padding:78px 18px 35px}
-.standings-panel{position:relative;width:min(94vw,980px);background:rgba(235,240,245,.10);border:1px solid rgba(255,255,255,.38);border-radius:18px;overflow:hidden;box-shadow:0 25px 90px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.18);backdrop-filter:blur(20px) saturate(125%);-webkit-backdrop-filter:blur(20px) saturate(125%);opacity:0}
-.standings-panel.table-ready{opacity:1;transition:opacity .28s ease}
+.standings-panel{position:relative;width:min(94vw,980px);background:rgba(235,240,245,.10);border:1px solid rgba(255,255,255,.38);border-radius:18px;overflow:hidden;box-shadow:0 25px 90px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.18);backdrop-filter:blur(20px) saturate(125%);-webkit-backdrop-filter:blur(20px) saturate(125%);opacity:1;visibility:visible}
+.standings-panel.table-ready{opacity:1;visibility:visible}
 .split-reveal{position:fixed;inset:0;z-index:8;pointer-events:none;display:none}.split-reveal.active{display:block}
 .split-half{position:absolute;overflow:hidden;will-change:clip-path,opacity;filter:drop-shadow(0 14px 28px rgba(0,0,0,.28));opacity:0}
 .split-half .standings-ghost{position:absolute;margin:0;opacity:1}
@@ -93,7 +93,7 @@ function form(t){let a=[];for(let i=0;i<(t.w||0)&&a.length<5;i++)a.push('W');for
 fetch('data.json?v=8').then(r=>r.json()).then(a=>{a.sort((x,y)=>y.pts-x.pts||y.gd-x.gd||y.gf-x.gf||x.team.localeCompare(y.team));standingsBody.innerHTML=a.map((t,i)=>'<tr><td>'+(i+1)+'</td><td class="club"><span class="club-mark">'+t.team.slice(0,2)+'</span>'+t.team+'</td><td>'+t.p+'</td><td>'+t.w+'</td><td>'+t.d+'</td><td>'+t.l+'</td><td>'+t.gf+'</td><td>'+t.ga+'</td><td>'+t.gd+'</td><td class="points">'+t.pts+'</td><td>'+form(t)+'</td></tr>').join('')});
 const panel=document.querySelector('.standings-panel'),splitReveal=document.getElementById('splitReveal');
 function playTableReveal(){
- panel.classList.remove('table-ready');
+ panel.classList.add('table-ready');
  splitReveal.classList.remove('active');splitReveal.innerHTML='';
  const rect=panel.getBoundingClientRect(),half=rect.height/2;
  splitReveal.innerHTML='';
