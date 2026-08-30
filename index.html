@@ -35,7 +35,7 @@ body.opened .p2-content{opacity:1;visibility:visible;pointer-events:auto}
 #rightCurve{display:none}
 .landing-ui{position:absolute;inset:0;z-index:8;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px 20px 40px;transition:opacity .3s ease}
 header{position:absolute;top:0;left:0;width:100%;padding:26px clamp(20px,5vw,72px);display:flex;justify-content:space-between;align-items:center}.brand{font-size:clamp(20px,2.1vw,34px);font-weight:900;font-style:italic;letter-spacing:-1px}.brand b{color:#21e85e}.tag{font-size:10px;letter-spacing:.28em;color:#a8b6ae;margin-top:4px}.status{font-size:11px;letter-spacing:.12em;border:1px solid rgba(42,237,105,.35);padding:9px 14px;border-radius:999px;background:rgba(4,20,10,.38)}
-.kicker{font-size:11px;letter-spacing:.42em;color:#58f58a;margin-bottom:15px;text-transform:uppercase}h1{margin:0;font-size:clamp(44px,9vw,130px);line-height:.88;letter-spacing:-.06em;font-style:italic;text-shadow:0 0 35px rgba(37,241,99,.18)}h1 span{color:#25e965}.hero-p{margin:20px auto 28px;max-width:560px;color:#d0d8d3;font-size:clamp(14px,1.4vw,18px);line-height:1.55}.cta{cursor:pointer;border:1px solid rgba(255,255,255,.38);background:linear-gradient(135deg,#72777d,#3e4349);color:#fff;padding:17px 42px;border-radius:12px;font-size:15px;font-weight:900;letter-spacing:.15em}.action-buttons{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}.cta.play-game{background:linear-gradient(135deg,#20c85d,#087d36);border-color:rgba(118,255,165,.55);box-shadow:0 10px 30px rgba(22,197,85,.18)}.cta.play-game:hover{transform:translateY(-1px);filter:brightness(1.08)}.hint{margin-top:17px;font-size:10px;letter-spacing:.2em;color:#94a39a;text-transform:uppercase}footer{position:absolute;bottom:20px;left:0;width:100%;padding:0 clamp(20px,5vw,72px);display:flex;justify-content:space-between;color:#78857d;font-size:10px;letter-spacing:.12em}
+.kicker{font-size:11px;letter-spacing:.42em;color:#58f58a;margin-bottom:15px;text-transform:uppercase}h1{margin:0;font-size:clamp(44px,9vw,130px);line-height:.88;letter-spacing:-.06em;font-style:italic;text-shadow:0 0 35px rgba(37,241,99,.18)}h1 span{color:#25e965}.hero-p{margin:20px auto 28px;max-width:560px;color:#d0d8d3;font-size:clamp(14px,1.4vw,18px);line-height:1.55}.cta{cursor:pointer;border:1px solid rgba(255,255,255,.38);background:linear-gradient(135deg,#72777d,#3e4349);color:#fff;padding:17px 42px;border-radius:12px;font-size:15px;font-weight:900;letter-spacing:.15em}.hint{margin-top:17px;font-size:10px;letter-spacing:.2em;color:#94a39a;text-transform:uppercase}footer{position:absolute;bottom:20px;left:0;width:100%;padding:0 clamp(20px,5vw,72px);display:flex;justify-content:space-between;color:#78857d;font-size:10px;letter-spacing:.12em}
 body.opening .landing-ui{opacity:0;pointer-events:none}
 body.opening #leftDoor{transform:translateX(-14vw) translateZ(-12px) rotateY(72deg);filter:brightness(.72)}body.opening #rightDoor{transform:translateX(14vw) translateZ(-12px) rotateY(-72deg);filter:brightness(.72)}
 body.opening #leftCurve{opacity:0;transition:opacity .25s}
@@ -48,12 +48,12 @@ body.opened #leftDoor{transform:translateX(-105vw) rotateY(86deg);transition:tra
 <!-- PAGE 2: STANDINGS SCREEN -->
 <section id="page2" class="app-page page2" aria-label="Standings page"><div class="p2-world"><video class="p2-video" autoplay muted loop playsinline preload="auto"><source src="fc_mobile_background_hd_under25mb.mp4" type="video/mp4"></video><button class="home-btn" id="homeBtn">← HOME</button><div class="p2-content"><section class="standings-panel"><div class="panel-title"><h2>LEAGUE STANDINGS</h2><div class="season">Season<strong>2026–27</strong></div></div><div class="table-wrap"><table><thead><tr><th>#</th><th>CLUB</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>PTS</th><th>LAST 5</th></tr></thead><tbody id="standingsBody"></tbody></table></div></section></div></div></section><div class="split-reveal" id="splitReveal"></div>
 <!-- PAGE 1: HOME / LANDING SCREEN -->
-<section id="page1" class="app-page page1 door-stage" data-page="home" aria-label="Home page"><video id="sourceVideo" autoplay muted loop playsinline><source src="video_2026-08-29_18-55-29.mp4?v=4" type="video/mp4"></video><canvas id="leftDoor" class="door"></canvas><canvas id="rightDoor" class="door"></canvas><div class="door-glass"></div><svg id="leftCurve" class="curve" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M50 0 C48 8 47.5 14 48.5 21 C51 29 53 38 53.5 47 C53.5 55 49 64 47.5 72 C47 80 50 84 52 88 C53 93 53 97 52 100"/></svg><div class="landing-ui"><header><div><div class="brand"><b>FC</b> MOBILE</div><div class="tag">FAN STANDINGS HUB</div></div><div class="status">● LIVE SEASON 2026–27</div></header><div class="kicker">Enter the arena</div><h1>THE <span>GAME</span><br>STARTS HERE.</h1><p class="hero-p">Explore the latest FC Mobile season standings and follow the competition.</p><div class="action-buttons"><button class="cta" id="enter">VIEW STANDINGS →</button><button class="cta play-game" id="launchGame">PLAY FC MOBILE ↗</button></div><div class="hint">View the standings or launch the game</div><footer><div>© 2026 FC MOBILE FAN PROJECT</div><div class="footer-right">WATCH • EXPLORE • COMPETE</div></footer></div></section>
+<section id="page1" class="app-page page1 door-stage" data-page="home" aria-label="Home page"><video id="sourceVideo" autoplay muted loop playsinline><source src="video_2026-08-29_18-55-29.mp4?v=4" type="video/mp4"></video><canvas id="leftDoor" class="door"></canvas><canvas id="rightDoor" class="door"></canvas><div class="door-glass"></div><svg id="leftCurve" class="curve" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M50 0 C48 8 47.5 14 48.5 21 C51 29 53 38 53.5 47 C53.5 55 49 64 47.5 72 C47 80 50 84 52 88 C53 93 53 97 52 100"/></svg><div class="landing-ui"><header><div><div class="brand"><b>FC</b> MOBILE</div><div class="tag">FAN STANDINGS HUB</div></div><div class="status">● LIVE SEASON 2026–27</div></header><div class="kicker">Enter the arena</div><h1>THE <span>GAME</span><br>STARTS HERE.</h1><p class="hero-p">Explore the latest FC Mobile season standings and follow the competition.</p><button class="cta" id="enter">VIEW STANDINGS →</button><div class="hint">Enter the standings hub</div><footer><div>© 2026 FC MOBILE FAN PROJECT</div><div class="footer-right">WATCH • EXPLORE • COMPETE</div></footer></div></section>
 <script>
 (() => {
 'use strict';
 const $=s=>document.querySelector(s);
-const body=document.body, enter=$('#enter'), home=$('#homeBtn'), launchGame=$('#launchGame');
+const body=document.body, enter=$('#enter'), home=$('#homeBtn');
 const panel=$('.standings-panel'), tbody=$('#standingsBody'), reveal=$('#splitReveal');
 const source=$('#sourceVideo'), p2=$('.p2-video');
 const left=$('#leftDoor'), right=$('#rightDoor');
@@ -218,12 +218,7 @@ function returnToHome(){
 
 enter&&enter.addEventListener('click',open);
 
-/* Official EA smart download link: on supported mobile devices it can
-   hand off to FC Mobile when available, otherwise it resolves to the
-   appropriate official store/download destination. */
-launchGame&&launchGame.addEventListener('click',()=>{
- window.location.href='https://fcmobile.sng.link/Dn1ol/fmnz';
-});
+
 home&&home.addEventListener('click',returnToHome);
 
 /* Native Android/iPhone browser Back and back gestures. */
