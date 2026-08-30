@@ -8,8 +8,10 @@
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020504;font-family:Arial,Helvetica,sans-serif;color:#fff}
 :root{--green:#25e965}
 /* PAGE 2: COMPLETELY COVERED UNTIL THE DOORS OPEN */
-.page2{position:fixed;inset:0;z-index:1;background:#030806;overflow:auto}
-.p2-video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.48)}
+.page2{position:fixed;inset:0;z-index:1;background:#030806;overflow:hidden;perspective:1800px}
+.p2-world{position:absolute;inset:-8vh -8vw;transform:scale(.82) translateY(2vh);transform-origin:center;transition:transform 2.4s cubic-bezier(.18,.8,.18,1);will-change:transform}
+body.opened .p2-world{transform:scale(1.035) translateY(-.8vh)}
+.p2-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.48);transform:scale(1.06)}
 .p2-content{position:relative;z-index:2;min-height:100%;display:flex;align-items:center;justify-content:center;padding:78px 18px 35px}
 .standings-panel{position:relative;width:min(94vw,980px);background:rgba(235,240,245,.10);border:1px solid rgba(255,255,255,.38);border-radius:18px;overflow:hidden;box-shadow:0 25px 90px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.18);backdrop-filter:blur(20px) saturate(125%);-webkit-backdrop-filter:blur(20px) saturate(125%);opacity:1;visibility:visible}
 .standings-panel.table-ready{opacity:1;visibility:visible}
@@ -52,8 +54,8 @@ header{position:absolute;top:0;left:0;width:100%;padding:26px clamp(20px,5vw,72p
 .cta{cursor:pointer;border:1px solid rgba(255,255,255,.38);background:linear-gradient(135deg,#72777d,#3e4349);color:#fff;padding:17px 42px;border-radius:12px;font-size:15px;font-weight:900;letter-spacing:.15em}.hint{margin-top:17px;font-size:10px;letter-spacing:.2em;color:#94a39a;text-transform:uppercase}footer{position:absolute;bottom:20px;left:0;width:100%;padding:0 clamp(20px,5vw,72px);display:flex;justify-content:space-between;color:#78857d;font-size:10px;letter-spacing:.12em}
 
 body.opening .landing-ui{opacity:0;pointer-events:none}
-body.opening #leftDoor{transform:translateX(-12vw) rotateY(70deg);filter:brightness(.72)}
-body.opening #rightDoor{transform:translateX(12vw) rotateY(-70deg);filter:brightness(.72)}
+body.opening #leftDoor{transform:translateX(-14vw) translateZ(-12px) rotateY(72deg);filter:brightness(.72)}
+body.opening #rightDoor{transform:translateX(14vw) translateZ(-12px) rotateY(-72deg);filter:brightness(.72)}
 body.opening #leftCurve{opacity:0;transition:opacity .25s}
 body.opened .door-stage{pointer-events:none;opacity:0;transition:opacity .65s ease .4s}
 body.opened #leftDoor{transform:translateX(-105vw) rotateY(86deg);transition:transform .7s ease .02s}
@@ -62,11 +64,11 @@ body.opened #rightDoor{transform:translateX(105vw) rotateY(-86deg);transition:tr
 </style>
 </head>
 <body>
-<section class="page2">
+<section class="page2"><div class="p2-world">
  <video class="p2-video" autoplay muted loop playsinline><source src="fc_mobile_background_hd_under25mb.mp4" type="video/mp4"></video>
  <button class="home-btn" id="homeBtn">← HOME</button>
  <div class="p2-content"><section class="standings-panel"><div class="panel-title"><h2>LEAGUE STANDINGS</h2><div class="season">Season<strong>2026–27</strong></div></div><div class="table-wrap"><table><thead><tr><th>#</th><th>CLUB</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>PTS</th><th>LAST 5</th></tr></thead><tbody id="standingsBody"></tbody></table></div></section></div>
-</section><div class="split-reveal" id="splitReveal"></div>
+</div></section><div class="split-reveal" id="splitReveal"></div>
 
 <section class="door-stage" id="doorStage">
  <!-- ONE VIDEO ELEMENT ONLY. Its frames are copied into the two moving door canvases. -->
@@ -114,7 +116,7 @@ function openStandings(push=true){
  isOpen=true;
  if(push) history.pushState({fcPage:'standings'},'', '#standings');
  document.body.classList.add('opening');
- setTimeout(()=>{document.body.classList.add('opened');drawing=false;setTimeout(playTableReveal,650)},2350);
+ setTimeout(()=>{document.body.classList.add('opened');drawing=false;setTimeout(playTableReveal,1450)},2350);
 }
 function goHome(){
  isOpen=false;
