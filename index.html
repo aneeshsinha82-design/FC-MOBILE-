@@ -3,125 +3,81 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FC MOBILE — Home</title>
+<title>FC MOBILE — Standings</title>
 <style>
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#030806;font-family:Arial,Helvetica,sans-serif;color:#fff}
-:root{--green:#25e965;--glass:rgba(8,18,18,.28)}
-/* PAGE 2 LIVES UNDER PAGE 1 */
-.page2{position:fixed;inset:0;z-index:1;opacity:1;background:#030806;overflow:auto}
-.p2-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.page2:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 40%,rgba(0,0,0,.08),rgba(0,0,0,.68))}
-.p2-content{position:relative;z-index:2;min-height:100%;display:flex;align-items:center;justify-content:center;padding:90px 24px 40px}
-.standings-panel{width:min(92vw,980px);background:rgba(7,13,20,.72);backdrop-filter:blur(9px);border:1px solid rgba(74,244,128,.38);box-shadow:0 25px 90px rgba(0,0,0,.62),0 0 40px rgba(37,233,101,.1);border-radius:14px;overflow:hidden;transform:scale(.96);opacity:.78;transition:transform .9s ease .45s,opacity .7s ease .45s}
-body.opened .standings-panel{transform:scale(1);opacity:1}
-.panel-title{padding:22px 24px 16px;border-bottom:1px solid rgba(255,255,255,.14);display:flex;align-items:end;justify-content:space-between}
-.panel-title h2{margin:0;color:#58f58a;letter-spacing:.13em;font-size:clamp(20px,3vw,30px)}
-.season{font-size:12px;color:#9aa9a1;text-align:right}.season strong{display:block;color:#fff;font-size:15px;margin-top:3px}
-.table-wrap{overflow:auto}
-table{width:100%;border-collapse:collapse;min-width:760px}
-th,td{padding:13px 10px;text-align:center;border-bottom:1px solid rgba(255,255,255,.09);font-size:13px}
-th{font-size:11px;color:#9ba8a0;letter-spacing:.08em;background:rgba(0,0,0,.18)}
-.club{text-align:left;font-weight:700}.club-mark{display:inline-flex;width:27px;height:27px;border-radius:50%;align-items:center;justify-content:center;background:rgba(37,233,101,.15);border:1px solid rgba(37,233,101,.3);font-size:9px;margin-right:9px}
-.points{color:#58f58a;font-weight:900}
-.form-dot{display:inline-flex;width:17px;height:17px;border:1px solid #9aa;border-radius:50%;align-items:center;justify-content:center;margin:0 1px;font-size:10px}.win{border-color:#25e965;color:#25e965}.loss{border-color:#ff5d5d;color:#ff5d5d}.draw{color:#fff}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020504;font-family:Arial,Helvetica,sans-serif;color:#fff}
+:root{--green:#25e965}
+/* PAGE 2: COMPLETELY COVERED UNTIL THE DOORS OPEN */
+.page2{position:fixed;inset:0;z-index:1;background:#030806;overflow:auto}
+.p2-video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.48)}
+.p2-content{position:relative;z-index:2;min-height:100%;display:flex;align-items:center;justify-content:center;padding:78px 18px 35px}
+.standings-panel{width:min(94vw,980px);background:rgba(5,12,17,.86);border:1px solid rgba(74,244,128,.35);border-radius:15px;overflow:hidden;box-shadow:0 25px 90px rgba(0,0,0,.7)}
+.panel-title{padding:20px 22px;border-bottom:1px solid rgba(255,255,255,.12);display:flex;justify-content:space-between;align-items:end}.panel-title h2{margin:0;color:#58f58a;letter-spacing:.12em;font-size:clamp(19px,3vw,30px)}
+.season{font-size:11px;color:#9aa9a1}.season strong{display:block;color:#fff;font-size:14px;margin-top:4px}
+.table-wrap{overflow:auto}table{width:100%;min-width:680px;border-collapse:collapse}th,td{padding:12px 9px;text-align:center;border-bottom:1px solid rgba(255,255,255,.08);font-size:13px}th{font-size:10px;letter-spacing:.08em;color:#9aa9a1}.club{text-align:left;font-weight:700}.club-mark{display:inline-flex;width:26px;height:26px;border-radius:50%;align-items:center;justify-content:center;background:rgba(37,233,101,.12);border:1px solid rgba(37,233,101,.28);font-size:9px;margin-right:8px}.points{color:#58f58a;font-weight:900}
+.form-dot{display:inline-flex;width:17px;height:17px;border:1px solid #789;border-radius:50%;align-items:center;justify-content:center;margin:0 1px;font-size:9px}.win{border-color:#25e965;color:#25e965}.loss{border-color:#ff5d5d;color:#ff5d5d}
+.home-btn{position:fixed;z-index:20;top:18px;left:18px;border:1px solid rgba(255,255,255,.28);background:rgba(0,0,0,.55);color:#fff;padding:10px 14px;border-radius:999px;cursor:pointer;display:none}body.opened .home-btn{display:block}
 
-/* PAGE 1 IS A REAL TWO-DOOR LAYER */
-.door-stage{position:fixed;inset:0;z-index:10;perspective:1800px;perspective-origin:50% 50%;pointer-events:auto}
-.door{position:absolute;top:0;width:60vw;height:100%;overflow:hidden;transform-style:preserve-3d;will-change:transform;transition:transform 2.25s cubic-bezier(.18,.72,.18,1),filter 2.25s ease}
-/* CURVED, ORGANIC CENTRE SEAM — matching the hand-drawn design */
-.door-left{left:0;transform-origin:left center;clip-path:polygon(0 0,83.33% 0,82.5% 5%,80.8% 11%,80.8% 18%,82.8% 25%,85.5% 33%,86.2% 42%,84.6% 50%,80.5% 58%,79.2% 66%,81.5% 74%,85.2% 82%,86.2% 91%,84.4% 100%,0 100%);box-shadow:inset -18px 0 40px rgba(0,0,0,.5)}
-.door-right{right:0;transform-origin:right center;clip-path:polygon(16.67% 0,100% 0,100% 100%,15.6% 100%,13.8% 91%,14.8% 82%,18.5% 74%,20.8% 66%,19.5% 58%,15.4% 50%,13.8% 42%,14.5% 33%,17.2% 25%,19.2% 18%,19.2% 11%,17.5% 5%);box-shadow:inset 18px 0 40px rgba(0,0,0,.5)}
-.door-video{position:absolute;top:0;width:100vw;height:100vh;object-fit:cover;max-width:none;filter:brightness(.78)}
-.door-left .door-video{left:0}.door-right .door-video{right:-40vw}
-.door-glass{position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.12),transparent 18%,transparent 72%,rgba(37,233,101,.08));border:1px solid rgba(255,255,255,.12);pointer-events:none;backdrop-filter:blur(.3px)}
-.door-left .door-glass{border-left-color:rgba(88,245,138,.3)}.door-right .door-glass{border-right-color:rgba(88,245,138,.3)}
-.door-shine{position:absolute;top:0;bottom:0;width:2px;background:#8affaf;box-shadow:0 0 16px #25e965,0 0 35px rgba(37,233,101,.55)}
-.curve-line{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;filter:drop-shadow(0 0 8px rgba(37,233,101,.9))}.curve-line path{fill:none;stroke:#8affaf;stroke-width:.55;vector-effect:non-scaling-stroke}.curve-right path{stroke:#8affaf}
+/* PAGE 1 */
+.door-stage{position:fixed;inset:0;z-index:10;background:#000;perspective:1800px;overflow:hidden}
+#sourceVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.8);z-index:1}
+/* Canvases are TWO VISUAL DOOR HALVES copied from ONE playing video */
+.door{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;transform-style:preserve-3d;will-change:transform;transition:transform 2.35s cubic-bezier(.18,.72,.18,1),filter 2.35s ease}
+#leftDoor{transform-origin:left center;clip-path:polygon(0 0,50% 0,49% 7%,48% 14%,48.5% 21%,51% 29%,53% 38%,53.5% 47%,52% 55%,49% 64%,47.5% 72%,49% 80%,52% 88%,53% 94%,52% 100%,0 100%)}
+#rightDoor{transform-origin:right center;clip-path:polygon(50% 0,100% 0,100% 100%,52% 100%,53% 94%,52% 88%,49% 80%,47.5% 72%,49% 64%,52% 55%,53.5% 47%,53% 38%,51% 29%,48.5% 21%,48% 14%,49% 7%)}
+/* hide the source video after canvases are ready: only ONE video is playing */
+.door-stage.ready #sourceVideo{opacity:0}
+.door-glass{position:absolute;inset:0;z-index:4;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.07),transparent 22%,transparent 76%,rgba(37,233,101,.06))}
+.curve{position:absolute;inset:0;z-index:5;width:100%;height:100%;pointer-events:none;filter:drop-shadow(0 0 8px rgba(37,233,101,.9))}
+.curve path{fill:none;stroke:#8affaf;stroke-width:1.1;vector-effect:non-scaling-stroke}
+#rightCurve{display:none} /* ONE visible shared seam, not two separate gaps */
 
-/* SINGLE OVERLAY, CLIPPED BY EACH DOOR SO TEXT ALSO SPLITS */
-.door-copy{position:absolute;inset:0;width:100vw;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px 20px 40px}
-.door-left .door-copy{clip-path:inset(0 40% 0 0)}.door-right .door-copy{clip-path:inset(0 0 0 40%)}
-header{position:absolute;top:0;left:0;width:100vw;padding:26px clamp(20px,5vw,72px);display:flex;justify-content:space-between;align-items:center}
-.brand{font-size:clamp(20px,2.1vw,34px);font-weight:900;font-style:italic;letter-spacing:-1px}.brand b{color:#21e85e}.tag{font-size:10px;letter-spacing:.28em;color:#a8b6ae;margin-top:4px}
-.status{font-size:11px;letter-spacing:.15em;border:1px solid rgba(42,237,105,.35);padding:9px 14px;border-radius:999px;background:rgba(4,20,10,.38)}
-.kicker{font-size:11px;letter-spacing:.42em;color:#58f58a;margin-bottom:15px;text-transform:uppercase}
-h1{margin:0;font-size:clamp(46px,9vw,130px);line-height:.88;letter-spacing:-.06em;font-style:italic;text-shadow:0 0 35px rgba(37,241,99,.18)}h1 span{color:#25e965}
-.hero-p{margin:20px auto 28px;max-width:560px;color:#d0d8d3;font-size:clamp(14px,1.4vw,18px);line-height:1.55}
-.cta{cursor:pointer;border:1px solid rgba(255,255,255,.38);background:linear-gradient(135deg,#72777d,#3e4349);color:#fff;padding:17px 42px;border-radius:12px;font-size:15px;font-weight:900;letter-spacing:.15em;box-shadow:0 0 28px rgba(0,0,0,.42);transition:.25s}
-.cta:hover{transform:translateY(-3px) scale(1.03);background:linear-gradient(135deg,#8a9096,#50565c)}
-.hint{margin-top:17px;font-size:10px;letter-spacing:.2em;color:#94a39a;text-transform:uppercase}
-footer{position:absolute;bottom:20px;left:0;width:100vw;padding:0 clamp(20px,5vw,72px);display:flex;justify-content:space-between;color:#78857d;font-size:10px;letter-spacing:.12em}
+.landing-ui{position:absolute;inset:0;z-index:8;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px 20px 40px;transition:opacity .3s ease}
+header{position:absolute;top:0;left:0;width:100%;padding:26px clamp(20px,5vw,72px);display:flex;justify-content:space-between;align-items:center}.brand{font-size:clamp(20px,2.1vw,34px);font-weight:900;font-style:italic;letter-spacing:-1px}.brand b{color:#21e85e}.tag{font-size:10px;letter-spacing:.28em;color:#a8b6ae;margin-top:4px}.status{font-size:11px;letter-spacing:.12em;border:1px solid rgba(42,237,105,.35);padding:9px 14px;border-radius:999px;background:rgba(4,20,10,.38)}
+.kicker{font-size:11px;letter-spacing:.42em;color:#58f58a;margin-bottom:15px;text-transform:uppercase}h1{margin:0;font-size:clamp(44px,9vw,130px);line-height:.88;letter-spacing:-.06em;font-style:italic;text-shadow:0 0 35px rgba(37,241,99,.18)}h1 span{color:#25e965}.hero-p{margin:20px auto 28px;max-width:560px;color:#d0d8d3;font-size:clamp(14px,1.4vw,18px);line-height:1.55}
+.cta{cursor:pointer;border:1px solid rgba(255,255,255,.38);background:linear-gradient(135deg,#72777d,#3e4349);color:#fff;padding:17px 42px;border-radius:12px;font-size:15px;font-weight:900;letter-spacing:.15em}.hint{margin-top:17px;font-size:10px;letter-spacing:.2em;color:#94a39a;text-transform:uppercase}footer{position:absolute;bottom:20px;left:0;width:100%;padding:0 clamp(20px,5vw,72px);display:flex;justify-content:space-between;color:#78857d;font-size:10px;letter-spacing:.12em}
 
-/* SLOW 3D DOOR OPEN */
-body.opening .door-left{transform:translateX(-16vw) rotateY(70deg);filter:brightness(.75)}
-body.opening .door-right{transform:translateX(16vw) rotateY(-70deg);filter:brightness(.75)}
-body.opened .door-stage{pointer-events:none}
-body.opened .door-left{transform:translateX(-64vw) rotateY(86deg);transition:transform .75s ease}
-body.opened .door-right{transform:translateX(64vw) rotateY(-86deg);transition:transform .75s ease}
-body.opened .door-stage{transition:opacity .8s ease .5s;opacity:0}
-body.opening .cta{pointer-events:none}
-
-.home-btn{position:fixed;z-index:20;top:20px;left:20px;border:1px solid rgba(255,255,255,.28);background:rgba(0,0,0,.35);color:#fff;padding:10px 14px;border-radius:999px;cursor:pointer;opacity:0;pointer-events:none;transition:.4s}
-body.opened .home-btn{opacity:1;pointer-events:auto}
-@media(max-width:650px){.status,.footer-right{display:none}.panel-title{padding:18px}.cta{padding:15px 27px}.door-left .door-video{left:0}.door-right .door-video{right:-50vw}}
-@media(prefers-reduced-motion:reduce){.door{transition-duration:.01ms!important}}
+body.opening .landing-ui{opacity:0;pointer-events:none}
+body.opening #leftDoor{transform:translateX(-12vw) rotateY(70deg);filter:brightness(.72)}
+body.opening #rightDoor{transform:translateX(12vw) rotateY(-70deg);filter:brightness(.72)}
+body.opening #leftCurve{opacity:0;transition:opacity .25s}
+body.opened .door-stage{pointer-events:none;opacity:0;transition:opacity .65s ease .4s}
+body.opened #leftDoor{transform:translateX(-105vw) rotateY(86deg);transition:transform .7s ease}
+body.opened #rightDoor{transform:translateX(105vw) rotateY(-86deg);transition:transform .7s ease}
+@media(max-width:650px){.status,.footer-right{display:none}.cta{padding:15px 25px}.panel-title{padding:17px}}
 </style>
 </head>
 <body>
-<section class="page2" id="page2">
-  <video class="p2-video" autoplay muted loop playsinline><source src="fc_mobile_background_hd_under25mb.mp4" type="video/mp4"></video>
-  <button class="home-btn" id="homeBtn">← HOME</button>
-  <div class="p2-content">
-    <section class="standings-panel">
-      <div class="panel-title"><h2>LEAGUE STANDINGS</h2><div class="season">Season<strong>2026–27</strong></div></div>
-      <div class="table-wrap"><table><thead><tr><th>#</th><th>CLUB</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>PTS</th><th>LAST 5</th></tr></thead><tbody id="standingsBody"></tbody></table></div>
-    </section>
-  </div>
+<section class="page2">
+ <video class="p2-video" autoplay muted loop playsinline><source src="fc_mobile_background_hd_under25mb.mp4" type="video/mp4"></video>
+ <button class="home-btn" id="homeBtn">← HOME</button>
+ <div class="p2-content"><section class="standings-panel"><div class="panel-title"><h2>LEAGUE STANDINGS</h2><div class="season">Season<strong>2026–27</strong></div></div><div class="table-wrap"><table><thead><tr><th>#</th><th>CLUB</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>PTS</th><th>LAST 5</th></tr></thead><tbody id="standingsBody"></tbody></table></div></section></div>
 </section>
 
-<section class="door-stage" id="doorStage" aria-label="FC Mobile entrance">
-  <div class="door door-left">
-    <video class="door-video" autoplay muted loop playsinline><source src="video_2026-08-29_18-55-29.mp4?v=2" type="video/mp4"></video>
-    <div class="door-glass"></div><svg class="curve-line" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M83 0 C80 10 80 18 83 25 C88 34 87 43 84 50 C79 59 79 66 82 74 C87 83 87 92 84 100"/></svg>
-    <div class="door-copy">
-      <header><div><div class="brand"><b>FC</b> MOBILE</div><div class="tag">FAN STANDINGS HUB</div></div><div class="status">● LIVE SEASON 2026–27</div></header>
-      <div class="kicker">Enter the arena</div><h1>THE <span>GAME</span><br>STARTS HERE.</h1>
-      <p class="hero-p">Explore the latest FC Mobile season standings and follow the competition.</p>
-      <button class="cta" id="enter">VIEW STANDINGS →</button><div class="hint">Enter the standings hub</div>
-      <footer><div>© 2026 FC MOBILE FAN PROJECT</div><div class="footer-right">WATCH • EXPLORE • COMPETE</div></footer>
-    </div>
-  </div>
-  <div class="door door-right">
-    <video class="door-video" autoplay muted loop playsinline><source src="video_2026-08-29_18-55-29.mp4?v=2" type="video/mp4"></video>
-    <div class="door-glass"></div><svg class="curve-line curve-right" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M17 0 C20 10 20 18 17 25 C12 34 13 43 16 50 C21 59 21 66 18 74 C13 83 13 92 16 100"/></svg>
-    <div class="door-copy">
-      <header><div><div class="brand"><b>FC</b> MOBILE</div><div class="tag">FAN STANDINGS HUB</div></div><div class="status">● LIVE SEASON 2026–27</div></header>
-      <div class="kicker">Enter the arena</div><h1>THE <span>GAME</span><br>STARTS HERE.</h1>
-      <p class="hero-p">Explore the latest FC Mobile season standings and follow the competition.</p>
-      <button class="cta" aria-hidden="true" tabindex="-1">VIEW STANDINGS →</button><div class="hint">Enter the standings hub</div>
-      <footer><div>© 2026 FC MOBILE FAN PROJECT</div><div class="footer-right">WATCH • EXPLORE • COMPETE</div></footer>
-    </div>
-  </div>
+<section class="door-stage" id="doorStage">
+ <!-- ONE VIDEO ELEMENT ONLY. Its frames are copied into the two moving door canvases. -->
+ <video id="sourceVideo" autoplay muted loop playsinline><source src="video_2026-08-29_18-55-29.mp4?v=4" type="video/mp4"></video>
+ <canvas id="leftDoor" class="door"></canvas>
+ <canvas id="rightDoor" class="door"></canvas>
+ <div class="door-glass"></div>
+ <svg id="leftCurve" class="curve" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M50 0 C48 8 47.5 14 48.5 21 C51 29 53 38 53.5 47 C53.5 55 49 64 47.5 72 C47 80 50 84 52 88 C53 93 53 97 52 100"/></svg>
+ <div class="landing-ui">
+   <header><div><div class="brand"><b>FC</b> MOBILE</div><div class="tag">FAN STANDINGS HUB</div></div><div class="status">● LIVE SEASON 2026–27</div></header>
+   <div class="kicker">Enter the arena</div><h1>THE <span>GAME</span><br>STARTS HERE.</h1>
+   <p class="hero-p">Explore the latest FC Mobile season standings and follow the competition.</p>
+   <button class="cta" id="enter">VIEW STANDINGS →</button><div class="hint">Enter the standings hub</div>
+   <footer><div>© 2026 FC MOBILE FAN PROJECT</div><div class="footer-right">WATCH • EXPLORE • COMPETE</div></footer>
+ </div>
 </section>
-
 <script>
-let teamsData=[],isOpen=false;
-const form=t=>{let a=[];for(let i=0;i<(t.w||0)&&a.length<5;i++)a.push('W');for(let i=0;i<(t.d||0)&&a.length<5;i++)a.push('D');for(let i=0;i<(t.l||0)&&a.length<5;i++)a.push('L');while(a.length<5)a.push('');return a.map(x=>'<span class="form-dot '+(x==='W'?'win':x==='L'?'loss':x==='D'?'draw':'')+'">'+(x==='W'?'✓':x==='L'?'×':x==='D'?'−':'')+'</span>').join('')};
-fetch('data.json?v=5').then(r=>r.json()).then(t=>{teamsData=t.sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf||a.team.localeCompare(b.team));document.getElementById('standingsBody').innerHTML=teamsData.map((t,i)=>'<tr><td>'+(i+1)+'</td><td class="club"><span class="club-mark">'+t.team.slice(0,2)+'</span>'+t.team+'</td><td>'+t.p+'</td><td>'+t.w+'</td><td>'+t.d+'</td><td>'+t.l+'</td><td>'+t.gf+'</td><td>'+t.ga+'</td><td>'+t.gd+'</td><td class="points">'+t.pts+'</td><td>'+form(t)+'</td></tr>').join('')}).catch(()=>{});
-function openDoors(push=true){
- if(isOpen)return;isOpen=true;document.body.classList.add('opening');
- document.querySelectorAll('.door-video').forEach(v=>v.play().catch(()=>{}));
- setTimeout(()=>{document.body.classList.remove('opening');document.body.classList.add('opened');if(push)history.pushState({fcStandings:true},'', '#standings')},2250);
-}
-function closeDoors(){
- if(!isOpen)return;isOpen=false;document.body.classList.remove('opened');document.querySelector('.door-stage').style.opacity='1';
- setTimeout(()=>document.querySelector('.door-stage').style.opacity='',30);
-}
-document.getElementById('enter').addEventListener('click',()=>openDoors(true));
-document.getElementById('homeBtn').addEventListener('click',()=>history.back());
-window.addEventListener('popstate',closeDoors);
-if(location.hash==='#standings')setTimeout(()=>openDoors(false),150);
+const video=document.getElementById('sourceVideo'),stage=document.getElementById('doorStage'),left=document.getElementById('leftDoor'),right=document.getElementById('rightDoor');
+const ctxL=left.getContext('2d'),ctxR=right.getContext('2d');let drawing=false,isOpen=false;
+function size(){const dpr=Math.min(window.devicePixelRatio||1,2);[left,right].forEach(c=>{c.width=Math.round(innerWidth*dpr);c.height=Math.round(innerHeight*dpr);c.style.width=innerWidth+'px';c.style.height=innerHeight+'px'});ctxL.setTransform(dpr,0,0,dpr,0,0);ctxR.setTransform(dpr,0,0,dpr,0,0)}
+function draw(){if(video.readyState>=2){ctxL.clearRect(0,0,innerWidth,innerHeight);ctxR.clearRect(0,0,innerWidth,innerHeight);ctxL.drawImage(video,0,0,innerWidth,innerHeight);ctxR.drawImage(video,0,0,innerWidth,innerHeight);stage.classList.add('ready')}if(drawing)requestAnimationFrame(draw)}
+video.addEventListener('loadeddata',()=>{size();drawing=true;draw()});window.addEventListener('resize',size);
+function form(t){let a=[];for(let i=0;i<(t.w||0)&&a.length<5;i++)a.push('W');for(let i=0;i<(t.d||0)&&a.length<5;i++)a.push('D');for(let i=0;i<(t.l||0)&&a.length<5;i++)a.push('L');while(a.length<5)a.push('');return a.map(x=>'<span class="form-dot '+(x==='W'?'win':x==='L'?'loss':'')+'">'+(x==='W'?'✓':x==='L'?'×':x==='D'?'−':'')+'</span>').join('')}
+fetch('data.json?v=8').then(r=>r.json()).then(a=>{a.sort((x,y)=>y.pts-x.pts||y.gd-x.gd||y.gf-x.gf||x.team.localeCompare(y.team));standingsBody.innerHTML=a.map((t,i)=>'<tr><td>'+(i+1)+'</td><td class="club"><span class="club-mark">'+t.team.slice(0,2)+'</span>'+t.team+'</td><td>'+t.p+'</td><td>'+t.w+'</td><td>'+t.d+'</td><td>'+t.l+'</td><td>'+t.gf+'</td><td>'+t.ga+'</td><td>'+t.gd+'</td><td class="points">'+t.pts+'</td><td>'+form(t)+'</td></tr>').join('')});
+document.getElementById('enter').onclick=()=>{if(isOpen)return;isOpen=true;document.body.classList.add('opening');setTimeout(()=>{document.body.classList.remove('opening');document.body.classList.add('opened');drawing=false},2350)};
+document.getElementById('homeBtn').onclick=()=>{document.body.classList.remove('opened','opening');stage.style.opacity='1';stage.style.pointerEvents='auto';isOpen=false;drawing=true;draw();document.getElementById('leftDoor').style.transform='';document.getElementById('rightDoor').style.transform='';setTimeout(()=>stage.style.opacity='',700)};
 </script>
-</body>
-</html>
+</body></html>
