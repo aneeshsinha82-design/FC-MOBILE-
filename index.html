@@ -46,64 +46,81 @@ body.opened #leftDoor{transform:translateX(-105vw) rotateY(86deg);transition:tra
 </head>
 <body>
 <section class="page2"><div class="p2-world"><video class="p2-video" autoplay muted loop playsinline preload="auto"><source src="fc_mobile_background_hd_under25mb.mp4" type="video/mp4"></video><button class="home-btn" id="homeBtn">← HOME</button><div class="p2-content"><section class="standings-panel"><div class="panel-title"><h2>LEAGUE STANDINGS</h2><div class="season">Season<strong>2026–27</strong></div></div><div class="table-wrap"><table><thead><tr><th>#</th><th>CLUB</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>PTS</th><th>LAST 5</th></tr></thead><tbody id="standingsBody"></tbody></table></div></section></div></div></section><div class="split-reveal" id="splitReveal"></div>
-<section class="door-stage" id="doorStage"><video id="sourceVideo" autoplay muted loop playsinline><source src="video_2026-08-29_18-55-29.mp4?v=4" type="video/mp4"></video><canvas id="leftDoor" class="door"></canvas><canvas id="rightDoor" class="door"></canvas><div class="door-glass"></div><svg id="leftCurve" class="curve" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M50 0 C48 8 47.5 14 48.5 21 C51 29 53 38 53.5 47 C53.5 55 49 64 47.5 72 C47 80 50 84 52 88 C53 93 53 97 52 100"/></svg><div class="landing-ui"><header><div><div class="brand"><b>FC</b> MOBILE</div><div class="tag">FAN STANDINGS HUB</div></div><div class="status">● LIVE SEASON 2026–27</div></header><div class="kicker">Enter the arena</div><h1>THE <span>GAME</span><br>STARTS HERE.</h1><p class="hero-p">Explore the latest FC Mobile season standings and follow the competition.</p><button class="cta" id="enter" onclick="document.body.classList.add('transitioning','opening');setTimeout(function(){document.body.classList.add('opened');if(typeof playTableReveal==='function')setTimeout(playTableReveal,1200)},2350)">VIEW STANDINGS →</button><div class="hint">Enter the standings hub</div><footer><div>© 2026 FC MOBILE FAN PROJECT</div><div class="footer-right">WATCH • EXPLORE • COMPETE</div></footer></div></section>
+<section class="door-stage" id="doorStage"><video id="sourceVideo" autoplay muted loop playsinline><source src="video_2026-08-29_18-55-29.mp4?v=4" type="video/mp4"></video><canvas id="leftDoor" class="door"></canvas><canvas id="rightDoor" class="door"></canvas><div class="door-glass"></div><svg id="leftCurve" class="curve" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M50 0 C48 8 47.5 14 48.5 21 C51 29 53 38 53.5 47 C53.5 55 49 64 47.5 72 C47 80 50 84 52 88 C53 93 53 97 52 100"/></svg><div class="landing-ui"><header><div><div class="brand"><b>FC</b> MOBILE</div><div class="tag">FAN STANDINGS HUB</div></div><div class="status">● LIVE SEASON 2026–27</div></header><div class="kicker">Enter the arena</div><h1>THE <span>GAME</span><br>STARTS HERE.</h1><p class="hero-p">Explore the latest FC Mobile season standings and follow the competition.</p><button class="cta" id="enter">VIEW STANDINGS →</button><div class="hint">Enter the standings hub</div><footer><div>© 2026 FC MOBILE FAN PROJECT</div><div class="footer-right">WATCH • EXPLORE • COMPETE</div></footer></div></section>
 <script>
-const video=document.getElementById('sourceVideo'),p2Video=document.querySelector('.p2-video'),stage=document.getElementById('doorStage'),left=document.getElementById('leftDoor'),right=document.getElementById('rightDoor'),panel=document.querySelector('.standings-panel'),splitReveal=document.getElementById('splitReveal');
-const ctxL=left.getContext('2d'),ctxR=right.getContext('2d');let drawing=false,isOpen=false,tableDataReady=false;
-p2Video.load();p2Video.play().catch(()=>{});
-function size(){const dpr=Math.min(devicePixelRatio||1,2);[left,right].forEach(c=>{c.width=Math.round(innerWidth*dpr);c.height=Math.round(innerHeight*dpr);c.style.width=innerWidth+'px';c.style.height=innerHeight+'px'});ctxL.setTransform(dpr,0,0,dpr,0,0);ctxR.setTransform(dpr,0,0,dpr,0,0)}
-function draw(){if(video.readyState>=2){ctxL.clearRect(0,0,innerWidth,innerHeight);ctxR.clearRect(0,0,innerWidth,innerHeight);ctxL.drawImage(video,0,0,innerWidth,innerHeight);ctxR.drawImage(video,0,0,innerWidth,innerHeight);stage.classList.add('ready')}if(drawing)requestAnimationFrame(draw)}
-video.addEventListener('loadeddata',()=>{size();drawing=true;draw()});window.addEventListener('resize',size);
-function form(t){let a=[];for(let i=0;i<(t.w||0)&&a.length<5;i++)a.push('W');for(let i=0;i<(t.d||0)&&a.length<5;i++)a.push('D');for(let i=0;i<(t.l||0)&&a.length<5;i++)a.push('L');while(a.length<5)a.push('');return a.map(x=>'<span class="form-dot '+(x==='W'?'win':x==='L'?'loss':'')+'">'+(x==='W'?'✓':x==='L'?'×':x==='D'?'−':'')+'</span>').join('')}
-fetch('data.json?v=8').then(r=>r.json()).then(a=>{a.sort((x,y)=>y.pts-x.pts||y.gd-x.gd||y.gf-x.gf||x.team.localeCompare(y.team));standingsBody.innerHTML=a.map((t,i)=>'<tr><td>'+(i+1)+'</td><td class="club"><span class="club-mark">'+t.team.slice(0,2)+'</span>'+t.team+'</td><td>'+t.p+'</td><td>'+t.w+'</td><td>'+t.d+'</td><td>'+t.l+'</td><td>'+t.gf+'</td><td>'+t.ga+'</td><td>'+t.gd+'</td><td class="points">'+t.pts+'</td><td>'+form(t)+'</td></tr>').join('');tableDataReady=true;}).catch(()=>{tableDataReady=true});
-function playTableReveal(){
- if(!tableDataReady){setTimeout(playTableReveal,80);return}
- const rows=[...standingsBody.querySelectorAll('tr')];
- if(!rows.length){panel.style.visibility='visible';panel.style.opacity='1';return}
- const split=Math.ceil(rows.length/2);
- panel.style.visibility='hidden';panel.style.opacity='0';splitReveal.innerHTML='';
- const rect=panel.getBoundingClientRect();
- const boundary=rect.top + rect.height/2;
+(() => {
+'use strict';
+const $=s=>document.querySelector(s);
+const enter=$('#enter'),home=$('#homeBtn'),body=document.body;
+const stage=$('#doorStage'),panel=$('.standings-panel'),tbody=$('#standingsBody'),reveal=$('#splitReveal');
+const source=$('#sourceVideo'),p2=$('.p2-video');
+let opening=false,dataReady=false;
 
- function build(kind, groupRows){
-   const wrap=document.createElement('div');
-   wrap.className='split-half '+kind;
-   wrap.style.left=rect.left+'px';wrap.style.width=rect.width+'px';
-   wrap.style.top=boundary+'px';wrap.style.height='0px';
-   const card=document.createElement('section');
-   card.className='standings-panel';
-   card.style.cssText='position:absolute;left:0;top:0;width:100%;height:auto;margin:0;visibility:visible;opacity:1;';
-   const tableWrap=document.createElement('div');tableWrap.className='table-wrap';
-   const table=document.createElement('table');
-   if(kind==='top'){
-     table.appendChild(panel.querySelector('thead').cloneNode(true));
-   }
-   const body=document.createElement('tbody');
-   groupRows.forEach(r=>body.appendChild(r.cloneNode(true)));
-   table.appendChild(body);tableWrap.appendChild(table);
-   card.appendChild(tableWrap);wrap.appendChild(card);splitReveal.appendChild(wrap);
-   return {wrap,card};
- }
- const top=build('top',rows.slice(0,split));
- const bottom=build('bottom',rows.slice(split));
- splitReveal.classList.add('active');
-
- // Keep the real current order. Groups are measured separately, never pixel-cut through rows.
- const topH=top.card.getBoundingClientRect().height;
- const bottomH=bottom.card.getBoundingClientRect().height;
- const start=performance.now(),duration=2800,ease=t=>1-Math.pow(1-t,3);
- function frame(now){
-   const p=Math.min(1,(now-start)/duration),e=ease(p);
-   const th=topH*e,bh=bottomH*e;
-   top.wrap.style.height=th+'px';top.wrap.style.top=(boundary-th)+'px';
-   bottom.wrap.style.height=bh+'px';bottom.wrap.style.top=boundary+'px';
-   if(p<1){requestAnimationFrame(frame);return}
-   panel.style.visibility='visible';panel.style.opacity='1';
-   requestAnimationFrame(()=>{splitReveal.classList.remove('active');splitReveal.innerHTML='';});
- }
- requestAnimationFrame(frame);
+function render(rows){
+ rows.sort((a,b)=>(b.pts-a.pts)||(b.gd-a.gd)||(b.gf-a.gf)||String(a.team).localeCompare(String(b.team)));
+ tbody.innerHTML=rows.map((t,i)=>'<tr><td>'+(i+1)+'</td><td class="club"><span class="club-mark">'+String(t.team).slice(0,2)+'</span>'+t.team+'</td><td>'+t.p+'</td><td>'+t.w+'</td><td>'+t.d+'</td><td>'+t.l+'</td><td>'+t.gf+'</td><td>'+t.ga+'</td><td>'+t.gd+'</td><td class="points">'+t.pts+'</td><td></td></tr>').join('');
+ dataReady=true;
 }
-function openStandings(push=true){if(isOpen)return;isOpen=true;if(push)history.pushState({fcPage:'standings'},'', '#standings');document.body.classList.add('transitioning','opening');setTimeout(()=>{document.body.classList.add('opened');drawing=false;setTimeout(playTableReveal,1450)},2350)}
-function goHome(){isOpen=false;drawing=false;stage.style.transition='none';stage.style.opacity='1';stage.style.pointerEvents='auto';document.body.classList.remove('opened','opening','transitioning','table-ready');panel.style.visibility='visible';panel.style.opacity='0';splitReveal.classList.remove('active');splitReveal.innerHTML='';left.style.transition='none';right.style.transition='none';left.style.transform='';right.style.transform='';void stage.offsetWidth;stage.style.transition='';left.style.transition='';right.style.transition='';drawing=true;draw();setTimeout(()=>{stage.style.opacity='';stage.style.pointerEvents=''},30)}
-document.getElementById('enter').onclick=()=>openStandings(true);document.getElementById('homeBtn').onclick=()=>{if(location.hash==='#standings')history.back();else goHome()};window.addEventListener('popstate',goHome);
+fetch('data.json?v='+Date.now()).then(r=>r.json()).then(render).catch(()=>{dataReady=true;});
+
+function revealTable(){
+ if(!dataReady){setTimeout(revealTable,100);return;}
+ const rows=[...tbody.children];
+ if(!rows.length){panel.style.visibility='visible';panel.style.opacity='1';return;}
+ const split=Math.ceil(rows.length/2);
+ panel.style.visibility='hidden';panel.style.opacity='0';
+ reveal.innerHTML='';
+ const rect=panel.getBoundingClientRect();
+ const mid=rect.top+rect.height/2;
+
+ function half(kind,items,includeHead){
+   const w=document.createElement('div');w.className='split-half '+kind;
+   w.style.cssText='left:'+rect.left+'px;width:'+rect.width+'px;top:'+mid+'px;height:0px;';
+   const card=document.createElement('div');card.className='split-card';
+   const tw=document.createElement('div');tw.className='table-wrap';
+   const table=document.createElement('table');
+   if(includeHead)table.appendChild(panel.querySelector('thead').cloneNode(true));
+   const tb=document.createElement('tbody');items.forEach(x=>tb.appendChild(x.cloneNode(true)));
+   table.appendChild(tb);tw.appendChild(table);card.appendChild(tw);w.appendChild(card);reveal.appendChild(w);
+   return {w,card};
+ }
+ const top=half('top',rows.slice(0,split),true);
+ const bottom=half('bottom',rows.slice(split),false);
+ reveal.classList.add('active');
+ const th=top.card.getBoundingClientRect().height,bh=bottom.card.getBoundingClientRect().height;
+ const begin=performance.now(),dur=2800;
+ const tick=now=>{
+   const x=Math.min(1,(now-begin)/dur),e=1-Math.pow(1-x,3);
+   const h1=th*e,h2=bh*e;
+   top.w.style.height=h1+'px';top.w.style.top=(mid-h1)+'px';
+   bottom.w.style.height=h2+'px';bottom.w.style.top=mid+'px';
+   if(x<1)return requestAnimationFrame(tick);
+   panel.style.visibility='visible';panel.style.opacity='1';
+   reveal.classList.remove('active');reveal.innerHTML='';
+ };
+ requestAnimationFrame(tick);
+}
+
+function open(){
+ if(opening||body.classList.contains('opened'))return;
+ opening=true;
+ // Page 2 is displayed BEFORE doors move: no black gap.
+ body.classList.add('transitioning','opening');
+ if(p2){p2.play().catch(()=>{});}
+ setTimeout(()=>{
+   body.classList.add('opened');
+   opening=false;
+   setTimeout(revealTable,450);
+ },2350);
+}
+function close(){
+ opening=false;
+ body.classList.remove('opened','opening','transitioning');
+ panel.style.visibility='hidden';panel.style.opacity='0';
+ reveal.classList.remove('active');reveal.innerHTML='';
+}
+if(enter)enter.addEventListener('click',open);
+if(home)home.addEventListener('click',close);
+window.addEventListener('popstate',close);
+})();
 </script></body></html>
